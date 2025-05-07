@@ -1,1 +1,10 @@
-jkshdjkfhkfdjdsfd
+@font-face {
+    font-family: 'Acumin';
+    src: url('/fonts/Acumin-RPro.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'Acumin', sans-serif;
+}
