@@ -1,0 +1,25 @@
+{
+  "name": "2800-202510-bby11",
+  "version": "1.0.0",
+  "description": "Connects BCIT students with alumni for career advise",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RodrickVy/2800-202510-BBY11.git"
+  },
+  "keywords": [
+    "BCIT",
+    "Tech",
+    "Connect",
+    "Networking"
+  ],
+  "author": "Abdullah Al Asmy, Arshia Adamian, Nazanin Mohsenimehr, Indervir Grewal, Rodrick Vyizigiro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RodrickVy/2800-202510-BBY11/issues"
+  },
+  "homepage": "https://github.com/RodrickVy/2800-202510-BBY11#readme"
+}
