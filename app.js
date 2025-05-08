@@ -32,6 +32,10 @@ app.get("/", async (req, res) => {
     res.send(await loadPage("./app/home/intro.html"))
 })
 
+// Home page
+app.get("/home", async (req, res) => {
+    res.send(await loadPage("./app/home/home.html"))
+})
 
 //  Sends 404 page if route is unknown
 app.use((req,res) => {
