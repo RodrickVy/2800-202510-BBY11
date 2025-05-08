@@ -36,7 +36,7 @@ function getUserLocation() {
                 "Unknown";
   
               // Display the city in the HTML element
-              document.getElementById("city-display").textContent = `You are in: ${city}`;
+              document.getElementById("city-display").textContent = `${city}`;
             })
             .catch(error => {
               console.error("Error during reverse geocoding:", error);
