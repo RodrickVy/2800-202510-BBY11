@@ -4,15 +4,10 @@ const port = process.env.PORT || 4000;
 const app = express();
 const { loadPage } = require("./util.js");
 const fs = require("fs");
-
-const Joi = require("joi");
-const bcrypt = require("bcrypt");
-const saltRounds = 12;
-
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
-const expireTime = 1 * 60 * 60 * 1000; // 1 hour
 app.set("view engine", "ejs");
+const signupRoutes = require("./routes/signupRoutes");
 
 // Redirects to notfound if a person tries to access HTML files directly.
 app.use((req, res, next) => {
@@ -45,6 +40,10 @@ var mongoStore = MongoStore.create({
   },
 });
 
+//middleware
+app.use(express.static(__dirname + "/public"));
+app.use(express.urlencoded({ extended: false }));
+
 app.use(
   session({
     secret: node_session_secret,
@@ -54,57 +53,13 @@ app.use(
   })
 );
 
-//middleware
-app.use(express.static(__dirname + "/public"));
-app.use(express.urlencoded({ extended: false }));
+// signup and create user
+// mount to the home page
+app.use("/", signupRoutes(userCollection));
 
 // Intro page
 app.get("/", async (req, res) => {
   res.send(await loadPage("./app/home/intro.html"));
-});
-
-app.get("/signup", (req, res) => {
-  res.render("signup", { error: null });
-});
-
-// submit user
-app.post("/submitUser", async (req, res) => {
-  const { name, username, password } = req.body;
-
-  // Validate name, username, and password
-  const schema = Joi.object({
-    name: Joi.string().min(1).required(), // Ensure name is not empty
-    username: Joi.string().email().required(),
-    password: Joi.string().max(20).required(),
-  });
-
-  const validationResult = schema.validate({ name, username, password });
-  if (validationResult.error != null) {
-    console.log(validationResult.error);
-
-    // change this part, this must take place in signup.ejs
-    return res.render("signup", {
-      error: `invalid input: ${validationResult.error.message}`,
-    });
-  }
-
-  // Hash the password and insert the user into the database
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-  await userCollection.insertOne({
-    name: name,
-    username: username,
-    password: hashedPassword,
-  });
-  console.log("Inserted user");
-
-  req.session.authenticated = true;
-  req.session.username = username;
-  req.session.name = name; // Use the user's name for the session
-  req.session.cookie.maxAge = expireTime;
-
-  // redirect to the main page instead of the following line
-  res.redirect("/");
 });
 
 //  Sends 404 page if route is unknown
