@@ -26,8 +26,8 @@ async function loadPage(pageFilePath) {
                 fs.readFileSync(globalScriptsPath, 'utf8')
         ]);
 
-        console.log(appBarHTML);
-        console.log(footerHTML);
+        // console.log(appBarHTML);
+        // console.log(footerHTML);
         // Replace placeholders in the main page
         return pageContent
             .replace('<!--GLOBAL_SCRIPTS-->',scripts)
