@@ -59,23 +59,13 @@ app.use("/", signupRoutes(userCollection));
 
 // Intro page
 app.get("/", async (req, res) => {
-<<<<<<< HEAD
-    res.send(await loadPage("./app/home/intro.html"))
-})
+  res.send(await loadPage("./app/home/intro.html"));
+});
 
 // Home page
 app.get("/home", async (req, res) => {
-    res.send(await loadPage("./app/home/home.html"))
-})
-
-// Profile page
-app.get("/createprofile", async (req, res) => {
-    res.send(await loadPage("./app/profile/createprofile.html"))
-})
-=======
-  res.send(await loadPage("./app/home/intro.html"));
+  res.send(await loadPage("./app/home/home.html"));
 });
->>>>>>> authentication_Arshia
 
 //  Sends 404 page if route is unknown
 app.use((req, res) => {
