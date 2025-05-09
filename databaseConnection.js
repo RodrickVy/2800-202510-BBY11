@@ -1,22 +1,8 @@
 require("dotenv").config();
-const { MongoClient } = require("mongodb");
 
-const client = new MongoClient(process.env.MONGODB_HOST);
-let userCollection;
+const MongoClient = require("mongodb").MongoClient;
+const atlasURI = process.env.MONGODB_HOST;
 
-async function connect() {
-  await client.connect();
-  console.log("Connected to MongoDB");
+const database = new MongoClient(atlasURI, {});
+module.exports = { database };
 
-  const db = client.db(process.env.MONGODB_DATABASE);
-  userCollection = db.collection("users");
-}
-
-function getUserCollection() {
-  if (!userCollection) {
-    throw new Error("userCollection not initialized yet. Call connect() first.");
-  }
-  return userCollection;
-}
-
-module.exports = { connect, getUserCollection };
