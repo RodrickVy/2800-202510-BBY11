@@ -7,7 +7,7 @@ const fs = require("fs");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 app.set("view engine", "ejs");
-const authRoutes = require("./routes/authRoutes.js");
+const { signinFunction, signupFunction } = require("./routes/authRoutes.js");
 
 // Redirects to notfound if a person tries to access HTML files directly.
 app.use((req, res, next) => {
@@ -55,7 +55,9 @@ app.use(
 
 // signup and create user
 // mount to the home page
-app.use("/", authRoutes(userCollection));
+app.use("/", signupFunction(userCollection));
+
+app.use("/", signinFunction(userCollection));
 
 // Intro page
 app.get("/", async (req, res) => {
@@ -64,20 +66,18 @@ app.get("/", async (req, res) => {
 
 // Home page
 app.get("/home", async (req, res) => {
-    res.send(await loadPage("./app/home/home.html"))
-})
+  res.send(await loadPage("./app/home/home.html"));
+});
 
 // Profile page
 app.get("/createprofile", async (req, res) => {
-    res.send(await loadPage("./app/profile/createprofile.html"))
-})
-
+  res.send(await loadPage("./app/profile/createprofile.html"));
+});
 
 // Account page
 app.get("/account", async (req, res) => {
-    res.send(await loadPage("./app/account/account.html"))
-})
-
+  res.send(await loadPage("./app/account/account.html"));
+});
 
 //  Sends 404 page if route is unknown
 app.use((req, res) => {
