@@ -1,0 +1,36 @@
+<%- include("templates/header", {css: ['/css/login.css']}) %>
+
+<div class="container mt-5">
+  <h1 class="mb-4">Log In</h1>
+
+  <% if (error === 'invalid') { %>
+  <div class="alert alert-danger">Invalid username or password.</div>
+  <% } %>
+
+  <form action="/loggingin" method="POST" class="mb-3">
+    <div class="mb-3">
+      <input
+        type="text"
+        name="username"
+        placeholder="Email"
+        required
+        class="form-control"
+      />
+    </div>
+    <div class="mb-3">
+      <input
+        type="password"
+        name="password"
+        placeholder="Password"
+        required
+        class="form-control"
+      />
+    </div>
+    <button class="btn btn-primary">Log In</button>
+  </form>
+
+  <a href="/signup" class="btn btn-outline-secondary me-2">Sign Up</a>
+  <a href="/" class="btn btn-link">Back to home</a>
+</div>
+
+<%- include("templates/footer") %>
