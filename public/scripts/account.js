@@ -53,3 +53,5 @@ function getUserLocation() {
       document.getElementById("city-display").textContent = "Geolocation not supported.";
     }
   }
+
+  getUserLocation();
