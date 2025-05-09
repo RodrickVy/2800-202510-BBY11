@@ -5,3 +5,4 @@ const atlasURI = process.env.MONGODB_HOST;
 
 const database = new MongoClient(atlasURI, {});
 module.exports = { database };
+
