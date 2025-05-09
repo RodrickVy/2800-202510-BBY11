@@ -1,8 +1,22 @@
+require("dotenv").config();
+const session = require("express-session");
 const express = require("express");
 const port = process.env.PORT || 4000;
 const app = express();
 const {loadPage} = require("./util.js")
 const fs = require("fs");
+
+
+app.use(session({
+    secret: process.env.NODE_SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true
+  }));
+
+  app.use(express.urlencoded({ extended: true }));
+
+  const authRoutes = require('./app/routes/auth');
+  app.use(authRoutes);
 
 // Redirects to notfound if a person tries to access HTML files directly.
 app.use((req, res, next) => {
@@ -27,6 +41,7 @@ app.use("/app", express.static("./app"));
 
 
 
+
 // Intro page
 app.get("/", async (req, res) => {
     res.send(await loadPage("./app/home/intro.html"))
@@ -40,8 +55,11 @@ app.use((req,res) => {
     res.status(404).send(html)
 })
 
+const { connect } = require("./databaseConnection");
 
 // RUN SERVER
-app.listen(port, function () {
+connect().then(() => {
+  app.listen(port, function () {
     console.log("BCIT Connect Is Live On " + port + "!");
+  });
 });
