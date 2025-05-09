@@ -7,7 +7,7 @@ const fs = require("fs");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 app.set("view engine", "ejs");
-const signupRoutes = require("./routes/signupRoutes");
+const authRoutes = require("./routes/authRoutes.js");
 
 // Redirects to notfound if a person tries to access HTML files directly.
 app.use((req, res, next) => {
@@ -55,7 +55,7 @@ app.use(
 
 // signup and create user
 // mount to the home page
-app.use("/", signupRoutes(userCollection));
+app.use("/", authRoutes(userCollection));
 
 // Intro page
 app.get("/", async (req, res) => {
@@ -77,6 +77,7 @@ app.get("/createprofile", async (req, res) => {
 app.get("/account", async (req, res) => {
     res.send(await loadPage("./app/account/account.html"))
 })
+
 
 //  Sends 404 page if route is unknown
 app.use((req, res) => {
