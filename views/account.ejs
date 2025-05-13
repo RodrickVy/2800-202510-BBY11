@@ -1,0 +1,65 @@
+<h1>Account</h1>
+
+<h2>Full Name</h2>
+<p>bio</p>
+<br /><br />
+<h2>Professional Background</h2>
+<p>background</p>
+<br /><br />
+<h2>Availability</h2>
+<p>availability</p>
+<br /><br />
+<h2>Tags</h2>
+<p>tags</p>
+<br /><br />
+<h2>City</h2>
+<p id="city-display">Your city will appear here.</p>
+<br /><br />
+<h2>Settings</h2>
+
+<script>
+  function getUserLocation() {
+    console.log("Getting user location...");
+
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+
+          fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              const city =
+                data.address.city ||
+                data.address.town ||
+                data.address.village ||
+                data.address.county ||
+                "Unknown";
+
+              // Display the city in the HTML element
+              document.getElementById("city-display").textContent = `${city}`;
+            })
+            .catch((error) => {
+              console.error("Error during reverse geocoding:", error);
+              document.getElementById("city-display").textContent =
+                "Could not determine city.";
+            });
+        },
+        (error) => {
+          console.error("Error getting location:", error.message);
+          document.getElementById("city-display").textContent =
+            "Location access denied.";
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+      document.getElementById("city-display").textContent =
+        "Geolocation not supported.";
+    }
+  }
+  console.log("file being called");
+
+  getUserLocation();
+</script>
