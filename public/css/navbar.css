@@ -1,0 +1,26 @@
+/* General styles for the navbar */
+.icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+}
+
+.icon-wrapper i {
+  font-size: 24px;
+  transition: color 0.3s;
+}
+
+
+/* change color on active page */
+.nav-item.nav-link.active .icon-wrapper {
+  background-color: rgba(0, 123, 255, 0.1);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
