@@ -34,6 +34,13 @@ const signupFunction = (userCollection) => {
       name: name,
       username: username,
       password: hashedPassword,
+      user_type: "",
+      education: [{credential: "", institution: "", end_date: "", program: ""}],
+      work: [{role: "", company: "", years: "", description: ""}],
+      skills: "",
+      description: "",
+      image: "",
+      media: [{name: "", url: ""}] 
     });
     console.log("Inserted user");
 
@@ -41,6 +48,8 @@ const signupFunction = (userCollection) => {
     req.session.username = username;
     req.session.name = name;
     req.session.cookie.maxAge = expireTime;
+
+
 
     res.render("account");
   });
@@ -83,6 +92,7 @@ const signinFunction = (userCollection) => {
     req.session.username = username;
     req.session.name = result[0].name;
     req.session.cookie.maxAge = expireTime;
+    req.session.user_id = result[0]._id;
 
     res.render("account");
   });
