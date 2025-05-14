@@ -37,7 +37,7 @@ const signupFunction = (userCollection) => {
       user_type: "",
       education: [{credential: "", institution: "", end_date: "", program: ""}],
       work: [{role: "", company: "", years: "", description: ""}],
-      skills: "",
+      skills: [],
       description: "",
       image: "",
       media: [{name: "", url: ""}] 
