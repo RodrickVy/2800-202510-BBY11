@@ -4,36 +4,131 @@
     <meta charset="UTF-8">
     <title>Create Profile</title>
     <!--GLOBAL_STYLES-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        body {
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        h2 {
+            margin-top: 20px;
+        }
+        select {
+            max-width: 200px;
+        }
+        </style>
 </head>
 <body>
 
 <h1>Create Profile</h1>
 
+<h2>Personal</h2>
+
 <form>
-    <label for="firstname">First Name:</label>
-    <input type="text" id="firstname" name="firstname" required>
-    <br><br>
-    <label for="lastname">Last Name:</label>
-    <input type="lastname" id="lastname" name="lastname" required>
-    <br><br>
-    <label for="status">BCIT Studying Status:</label>
-    <input type="status" id="status" name="status" required>
-    <br><br>
-    <label for="program">Your Program:</label>
-    <input type="program" id="program" name="program" required>
-    <br><br>
-    <label for="bio">Bio:</label>
-    <input type="bio" id="bio" name="bio" required>
-    <br><br>
-    <label for="background">Professional Background:</label>
-    <input type="background" id="background" name="background" required>
-    <br><br>
-    <label for="availability">Availability:</label>
-    <input type="availability" id="availability" name="availability" required>
-    <br><br>
-    <label for="tags">Tags:</label>
-    <input type="tags" id="tags" name="tags" required>
-    <br><br>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="firstname">First Name</label>
+        <input type="text" class="form-control" id="inputEmail4" placeholder="First Name">
+      </div>
+      <div class="form-group col-md-6">
+        <label for="lastname">Last Name</label>
+        <input type="text" class="form-control" id="inputPassword4" placeholder="Password">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="type">Student/Alumni</label>
+      <select id="option" class="form-control">
+        <option selected>Student</option>
+        <option>Alumni</option>
+    </div>
+    <div class="form-group">
+      <label for="inputAddress2">Address 2</label>
+      <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="inputCity">City</label>
+        <input type="text" class="form-control" id="inputCity">
+      </div>
+      <div class="form-group col-md-4">
+        <label for="inputState">State</label>
+        <select id="inputState" class="form-control">
+          <option selected>Choose...</option>
+          <option>...</option>
+        </select>
+      </div>
+      <div class="form-group col-md-2">
+        <label for="inputZip">Zip</label>
+        <input type="text" class="form-control" id="inputZip">
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="gridCheck">
+        <label class="form-check-label" for="gridCheck">
+          Check me out
+        </label>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Sign in</button>
+  </form>
+
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="image" accept="image/*">
+
+    <input placeholder="First Name*" type="text" id="firstname" name="firstname" required>
+    
+    <input placeholder="Last Name*" type="text" id="lastname" name="lastname" required>
+    
+
+    <select name="options" id="options" required>
+        <option value="option1">Student</option>
+        <option value="option2">Alumni</option>
+    </select>
+
+    <input placeholder="Bio*" type="textarea" id="bio" name="bio" required>
+    
+    <h2>Education</h2>
+
+    <input placeholder="institution*" type="text" id="institution" name="institution" required>
+    
+
+    <input placeholder="credentials*" type="text" id="credentials" name="credentials" required>
+    
+
+    <input placeholder="Your Program*" type="text" id="program" name="program" required>
+    
+
+    <input placeholder="End Year*" type="text" id="endyear" name="endyear" required>
+
+    
+    <h2>Work Experience</h2>
+
+    <input placeholder="Role" type="text" id="role" name="role">
+    
+
+    <input placeholder="Company" type="text" id="company" name="company">
+    
+
+    <input placeholder="Years" type="text" id="years" name="years">
+    
+
+    <input placeholder="Description" type="text" id="description" name="description">
+    
+    <h2>Interests</h2>
+
+    <input placeholder="Fields of interest" type="interest" id="interest" name="interest">
+    
+    
+
+    <input placeholder="Skills" type="skills" id="skills" name="skills">
+    
+    
+
+    <input placeholder="Social Media" type="social" id="social" name="social">
+    
     <input type="submit" value="Create Profile">
 </form>
 
