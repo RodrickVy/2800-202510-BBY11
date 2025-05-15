@@ -1,13 +1,16 @@
 require("dotenv").config();
 const express = require("express");
 const port = process.env.PORT || 4000;
+const { loadPage, getCareerIcon } = require('./util.js');
 const app = express();
-const { loadPage } = require("./util.js");
+app.locals.getCareerIcon = getCareerIcon;
+
 const fs = require("fs");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 app.set("view engine", "ejs");
 const { signinFunction, signupFunction } = require("./routes/authRoutes.js");
+const careerRoutes = require('./routes/careerRoutes');
 
 // Redirects to notfound if a person tries to access HTML files directly.
 app.use((req, res, next) => {
@@ -58,6 +61,8 @@ app.use(
 app.use("/", signupFunction(userCollection));
 
 app.use("/", signinFunction(userCollection));
+app.use('/', careerRoutes);
+
 
 // Intro page
 app.get("/", async (req, res) => {

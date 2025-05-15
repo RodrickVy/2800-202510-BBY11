@@ -35,7 +35,32 @@ async function loadPage(pageFilePath) {
     .replace("<!--FOOTER-->", footerHTML);
 }
 
-module.exports = { loadPage };
+function getCareerIcon(title) {
+  const iconMap = {
+    'Software Developer': 'bi-code-slash',
+    'Data Analyst': 'bi-bar-chart-line',
+    'UX Designer': 'bi-layout-text-window-reverse',
+    'Cybersecurity Specialist': 'bi-shield-lock',
+    'Product Manager': 'bi-kanban',
+    'Machine Learning Engineer': 'bi-cpu',
+    'DevOps Engineer': 'bi-gear-wide-connected',
+    'Cloud Engineer': 'bi-cloud',
+    'Mobile App Developer': 'bi-phone',
+    'QA Engineer': 'bi-bug',
+    'IT Support Specialist': 'bi-headset',
+    'Full Stack Developer': 'bi-stack',
+    'Game Developer': 'bi-controller',
+    'Technical Writer': 'bi-file-earmark-text',
+    'Web Designer': 'bi-palette',
+    'Data Engineer': 'bi-database-gear',
+    'UI Designer': 'bi-vector-pen',
+    'Systems Analyst': 'bi-diagram-3',
+    'Database Administrator': 'bi-database-check',
+    'AI Researcher': 'bi-robot'
+  };
+
+  return iconMap[title] || 'bi-briefcase';
+}
 
 //Define the include function for absolute file name
 global.base_dir = __dirname;
@@ -45,3 +70,5 @@ global.abs_path = function (path) {
 global.include = function (file) {
   return require(abs_path("/" + file));
 };
+
+module.exports = { loadPage, getCareerIcon };

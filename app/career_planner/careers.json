@@ -1,0 +1,382 @@
+[
+    {
+        "title": "Software Developer",
+        "summary": "Builds and maintains software applications, including web, mobile, and desktop apps.",
+        "description": "Software developers write, test, and maintain code that powers websites, mobile apps, and other software systems. They may specialize in front-end (user interface), back-end (server-side), or full-stack (both). Developers work closely with designers and product managers to turn technical requirements into working products, continuously improving functionality and fixing bugs.",
+        "skills": [
+            "JavaScript",
+            "Python",
+            "Git",
+            "React",
+            "APIs"
+        ],
+        "tasks": [
+            "Write clean, efficient code",
+            "Debug and troubleshoot applications",
+            "Collaborate with designers and other developers",
+            "Deploy and maintain applications"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "Data Analyst",
+        "summary": "Analyzes structured data to uncover trends, patterns, and insights that support business decisions.",
+        "description": "Data analysts work with large sets of data to discover useful insights and trends. They use tools like SQL, Excel, and Python to clean and process data, and then visualize and communicate findings to decision-makers. Analysts help teams make informed business or design decisions based on real-world data.",
+        "skills": [
+            "SQL",
+            "Excel",
+            "Python",
+            "Tableau",
+            "Data Cleaning"
+        ],
+        "tasks": [
+            "Collect and clean data",
+            "Run queries and generate reports",
+            "Visualize trends",
+            "Present insights to stakeholders"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "UX Designer",
+        "summary": "Designs user-friendly digital experiences by researching user behavior and crafting intuitive interfaces.",
+        "description": "UX designers are responsible for ensuring a smooth, intuitive, and user-centered experience on digital platforms. They research user needs, create wireframes and prototypes, and conduct usability tests to validate design decisions. Their work helps bridge the gap between user expectations and functional product designs.",
+        "skills": [
+            "Figma",
+            "User Research",
+            "Wireframing",
+            "Prototyping",
+            "Usability Testing"
+        ],
+        "tasks": [
+            "Conduct user research",
+            "Design wireframes and prototypes",
+            "Collaborate with developers",
+            "Run usability tests"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "Cybersecurity Specialist",
+        "summary": "Protects networks, systems, and data from cyber threats and vulnerabilities.",
+        "description": "Cybersecurity specialists defend digital infrastructure by identifying risks, setting up firewalls and encryption, and responding to attacks. They monitor systems for suspicious activity and ensure that software and hardware are secure. Their role is crucial in preventing data breaches and maintaining digital safety.",
+        "skills": [
+            "Network Security",
+            "Firewalls",
+            "Penetration Testing",
+            "Incident Response",
+            "SIEM Tools"
+        ],
+        "tasks": [
+            "Monitor and secure systems",
+            "Perform audits",
+            "Respond to incidents",
+            "Test system vulnerabilities"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "Product Manager",
+        "summary": "Oversees the development and delivery of tech products, aligning user needs with business goals.",
+        "description": "Product managers define the vision, goals, and roadmap for a product. They act as the communication hub between design, engineering, and stakeholders. Their job is to ensure the right features are built and shipped, on time and within budget, while meeting user needs and business objectives.",
+        "skills": [
+            "Agile",
+            "Scrum",
+            "Roadmapping",
+            "User Research",
+            "Project Management"
+        ],
+        "tasks": [
+            "Define product vision",
+            "Gather and prioritize requirements",
+            "Coordinate between teams",
+            "Measure product performance"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "Machine Learning Engineer",
+        "summary": "Designs and builds machine learning models to solve complex problems using data.",
+        "description": "Machine learning engineers create systems that learn from data and improve over time without being explicitly programmed. They clean and process datasets, build predictive models, and fine-tune them for accuracy and performance. Their work supports applications like recommendation engines, fraud detection, and AI chatbots.",
+        "skills": [
+            "Python",
+            "TensorFlow",
+            "Pandas",
+            "Statistics",
+            "Model Evaluation"
+        ],
+        "tasks": [
+            "Collect and preprocess data",
+            "Build ML models",
+            "Evaluate model accuracy",
+            "Deploy models to production"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "DevOps Engineer",
+        "summary": "Streamlines the software development lifecycle by managing infrastructure, automation, and deployments.",
+        "description": "DevOps engineers bridge the gap between development and operations by automating workflows and managing system infrastructure. They handle CI/CD pipelines, automate testing and deployment processes, and monitor app performance to ensure stability and scalability.",
+        "skills": [
+            "Docker",
+            "Kubernetes",
+            "CI/CD",
+            "AWS",
+            "Linux"
+        ],
+        "tasks": [
+            "Automate deployments",
+            "Monitor systems",
+            "Ensure scalability",
+            "Troubleshoot issues"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "Cloud Engineer",
+        "summary": "Builds and maintains cloud infrastructure to support scalable, secure applications.",
+        "description": "Cloud engineers are responsible for building and managing systems hosted on cloud platforms like AWS, Azure, or Google Cloud. They design architecture that scales, ensure security and compliance, and manage cost-efficient infrastructure setups.",
+        "skills": [
+            "AWS",
+            "Azure",
+            "Terraform",
+            "Linux",
+            "Security"
+        ],
+        "tasks": [
+            "Design cloud architecture",
+            "Implement cloud services",
+            "Manage backups and recovery",
+            "Optimize cloud costs"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "Mobile App Developer",
+        "summary": "Develops mobile applications for iOS and Android platforms.",
+        "description": "Mobile app developers create user-friendly apps for smartphones and tablets. They work with native and cross-platform frameworks, integrate APIs, and ensure the app is responsive and performs well across devices and screen sizes.",
+        "skills": [
+            "Java",
+            "Kotlin",
+            "Swift",
+            "Flutter",
+            "React Native"
+        ],
+        "tasks": [
+            "Build app UIs",
+            "Connect APIs",
+            "Test across devices",
+            "Release updates"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "QA Engineer",
+        "summary": "Ensures software quality through systematic testing and reporting.",
+        "description": "Quality assurance engineers ensure that products work as expected before reaching users. They write test cases, perform manual and automated tests, and track bugs until they're resolved. QA helps maintain reliability and user satisfaction.",
+        "skills": [
+            "Selenium",
+            "Test Cases",
+            "Jira",
+            "Bug Tracking",
+            "Automation Scripts"
+        ],
+        "tasks": [
+            "Write test plans",
+            "Run manual and automated tests",
+            "Log bugs",
+            "Verify fixes"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "IT Support Specialist",
+        "summary": "Provides technical assistance to users and maintains computer systems.",
+        "description": "IT support specialists troubleshoot hardware, software, and network issues for individuals and teams. They maintain system uptime, manage configurations, and provide technical training when needed. Their work is essential in keeping organizations productive and connected.",
+        "skills": [
+            "Troubleshooting",
+            "Windows",
+            "Networking",
+            "Active Directory",
+            "Customer Support"
+        ],
+        "tasks": [
+            "Respond to help desk requests",
+            "Resolve hardware/software issues",
+            "Document fixes",
+            "Install updates"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "Full Stack Developer",
+        "summary": "Works on both front-end and back-end of web applications.",
+        "description": "Full stack developers are versatile programmers who build entire web applications, from user interfaces to databases and server logic. They work across multiple technologies and often bridge communication between design and development teams.",
+        "skills": [
+            "JavaScript",
+            "Node.js",
+            "MongoDB",
+            "React",
+            "Express.js"
+        ],
+        "tasks": [
+            "Develop APIs",
+            "Build UIs",
+            "Integrate databases",
+            "Ensure app performance"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "Game Developer",
+        "summary": "Creates interactive games for computers, consoles, or mobile devices.",
+        "description": "Game developers design and build interactive digital experiences, from simple 2D mobile games to immersive 3D environments. They use game engines like Unity or Unreal Engine, write game logic, and collaborate with designers, artists, and testers to bring stories and gameplay to life.",
+        "skills": [
+            "Unity",
+            "C#",
+            "Game Physics",
+            "3D Modeling",
+            "Animation"
+        ],
+        "tasks": [
+            "Design game mechanics",
+            "Write scripts",
+            "Test gameplay",
+            "Optimize performance"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "Technical Writer",
+        "summary": "Produces clear documentation for software, APIs, and systems.",
+        "description": "Technical writers create manuals, guides, and documentation that make complex software or systems understandable for users and developers. They translate technical jargon into simple, accurate instructions and often work with engineers, designers, and customer support teams.",
+        "skills": [
+            "Markdown",
+            "Git",
+            "Communication",
+            "API Knowledge",
+            "Editing"
+        ],
+        "tasks": [
+            "Write user guides",
+            "Document APIs",
+            "Edit drafts",
+            "Collaborate with devs"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "Web Designer",
+        "summary": "Designs the visual layout and user interface of websites.",
+        "description": "Web designers focus on the aesthetic and interactive aspects of websites. They create layouts, choose color schemes and typography, and ensure a seamless user experience. Many also collaborate with developers to implement responsive and accessible designs.",
+        "skills": [
+            "HTML",
+            "CSS",
+            "Photoshop",
+            "UX Design",
+            "Responsive Design"
+        ],
+        "tasks": [
+            "Create layouts",
+            "Design graphics",
+            "Implement responsive designs",
+            "Work with developers"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "Data Engineer",
+        "summary": "Builds systems to collect, store, and analyze large datasets.",
+        "description": "Data engineers develop and manage data pipelines that move information between systems, making it usable for analysis. They handle data storage, quality, and transformation, ensuring that data analysts and scientists have accurate, timely information.",
+        "skills": [
+            "ETL",
+            "SQL",
+            "Python",
+            "Spark",
+            "Data Pipelines"
+        ],
+        "tasks": [
+            "Design databases",
+            "Develop ETL processes",
+            "Ensure data reliability",
+            "Optimize data flow"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "UI Designer",
+        "summary": "Creates visually appealing and user-friendly interfaces for applications.",
+        "description": "UI designers craft the visual components of digital interfaces, such as buttons, menus, and icons. They focus on consistency, usability, and aesthetics, working with UX designers and developers to ensure that users can interact with products intuitively and enjoyably.",
+        "skills": [
+            "Figma",
+            "Color Theory",
+            "Typography",
+            "Design Systems",
+            "Prototyping"
+        ],
+        "tasks": [
+            "Design UI elements",
+            "Create design systems",
+            "Collaborate with devs",
+            "Ensure accessibility"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "Systems Analyst",
+        "summary": "Analyzes business requirements and implements IT solutions.",
+        "description": "Systems analysts evaluate current technology systems and suggest improvements to meet business goals. They gather requirements from stakeholders, design or upgrade systems, and act as a bridge between users and developers during implementation.",
+        "skills": [
+            "Business Analysis",
+            "UML",
+            "Systems Design",
+            "SQL",
+            "Stakeholder Communication"
+        ],
+        "tasks": [
+            "Gather requirements",
+            "Analyze systems",
+            "Create specs",
+            "Oversee implementations"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "Database Administrator",
+        "summary": "Manages and secures organizational databases.",
+        "description": "Database administrators (DBAs) ensure data is stored, organized, and accessed efficiently and securely. They perform backups, manage user access, and tune databases for performance. DBAs are critical to protecting sensitive data and maintaining uptime.",
+        "skills": [
+            "SQL",
+            "Oracle",
+            "Backups",
+            "Performance Tuning",
+            "Security"
+        ],
+        "tasks": [
+            "Install DBMS",
+            "Backup data",
+            "Optimize queries",
+            "Manage user permissions"
+        ],
+        "Alumni": []
+    },
+    {
+        "title": "AI Researcher",
+        "summary": "Explores and develops new methods in artificial intelligence and machine learning.",
+        "description": "AI researchers conduct theoretical and experimental work to push the boundaries of artificial intelligence. They build novel algorithms, validate their effectiveness with experiments, and publish findings in academic or applied settings. Their work drives innovation in machine learning and automation.",
+        "skills": [
+            "Python",
+            "Deep Learning",
+            "Research Methods",
+            "Statistics",
+            "TensorFlow"
+        ],
+        "tasks": [
+            "Conduct experiments",
+            "Analyze results",
+            "Publish findings",
+            "Develop prototypes"
+        ],
+        "Alumni": []
+    }
+]
