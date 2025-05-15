@@ -74,9 +74,20 @@ app.get("/home", async (req, res) => {
   res.send(await loadPage("./app/home/home.html"));
 });
 
-// Profile page
+// Serve the create profile page
 app.get("/createprofile", async (req, res) => {
   res.send(await loadPage("./app/profile/createprofile.html"));
+});
+
+// Handle form submission
+app.post('/createprofile', (req, res) => {
+  // Handle form data (save it, validate, etc.)
+  res.redirect('/createprofile2'); // This performs the actual redirect
+});
+
+// Serve the next page after form is submitted
+app.get("/createprofile2", async (req, res) => {
+  res.send(await loadPage("./app/profile/createprofile2.html"));
 });
 
 // Account page
