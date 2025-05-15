@@ -34,23 +34,32 @@ const authRoutes = (userCollection) => {
             name: name,
             username: username,
             password: hashedPassword,
+            lastname: "",
             user_type: "",
-            education: [{credential: "", institution: "", end_date: "", program: ""}],
+            education: [{credentials: "", institution: "", endyear: "", program: ""}],
             work: [{role: "", company: "", years: "", description: ""}],
             skills: [],
-            description: "",
+            bio: "",
+            interests: [],
             image: "",
             media: [{name: "", url: ""}]
         });
         console.log("Inserted user");
 
+        const result = await userCollection
+            .find({username: username})
+            .project({username: 1, password: 1})
+            .toArray();
+
+
         req.session.authenticated = true;
         req.session.username = username;
         req.session.name = name;
         req.session.cookie.maxAge = expireTime;
+        req.session.user_id = result[0]._id;
 
 
-        res.render("account");
+        res.render("createProfile", {css: [null]});
     });
 
 

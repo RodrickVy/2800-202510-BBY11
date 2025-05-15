@@ -60,7 +60,7 @@ app.use(
 // mount to the home page
 app.use("/", authRoutes(userCollection));
 app.use("/", careerRoutes());
-app.use("/", profileRoutes());
+app.use("/", profileRoutes(userCollection));
 
 
 // Intro page
