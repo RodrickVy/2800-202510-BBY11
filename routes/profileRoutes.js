@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const multer = require("multer");
+const path = require('path');
+const { ObjectId } = require('mongodb');
 
-const upload = multer({dest: '/userProfiles'});
-// destructing, only using the ObjectId from mongoDB
-const {ObjectId} = require('mongodb');
+const upload = multer({
+  dest: path.join(__dirname, '../userProfiles')
+});
 
 const profileRoutes = () => {
     router.post('/submitProfile', upload.single('profileImage'), async (req, res) => {
@@ -23,16 +25,16 @@ const profileRoutes = () => {
             {$set: updates}
         )
     })
-    router.get("/create-profile", async (req, res) => {
+    router.get("/createprofile", async (req, res) => {
         res.render("createProfile")
     });
 
-    router.get("/create-profile_2", async (req, res) => {
+    router.get("/createprofile2", async (req, res) => {
         res.render("createProfile2")
     });
 
     router.get("/account", async (req, res) => {
-        res.render("createProfile2")
+        res.render("account")
     });
 
     return router;
