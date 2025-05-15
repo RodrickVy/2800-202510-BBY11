@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Career Quiz Error</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8d7da;
+            padding-top: 60px;
+        }
+        .error-card {
+            max-width: 600px;
+            margin: auto;
+            background-color: #ffffff;
+            border-left: 5px solid #dc3545;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="error-card">
+        <h2 class="text-danger">⚠️ Something Went Wrong</h2>
+        <p class="mb-4"><%= error %> Please try retaking the quiz or contact support if the problem persists.</p>
+        <a href="/career_quiz" class="btn btn-danger">🔁 Retake Quiz</a>
+    </div>
+</div>
+</body>
+</html>

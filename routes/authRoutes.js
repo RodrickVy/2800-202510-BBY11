@@ -6,98 +6,92 @@ const saltRounds = 12;
 const router = express.Router();
 const expireTime = 1 * 60 * 60 * 1000; // 1 hour
 
-const signupFunction = (userCollection) => {
-  router.get("/signup", (req, res) => {
-    res.render("signup", { error: null });
-  });
-
-  router.post("/submitUser", async (req, res) => {
-    const { name, username, password } = req.body;
-
-    const schema = Joi.object({
-      name: Joi.string().min(1).required(),
-      username: Joi.string().email().required(),
-      password: Joi.string().max(20).required(),
+const authRoutes = (userCollection) => {
+    router.get("/signup", (req, res) => {
+        res.render("signup", {error: null});
     });
 
-    const validationResult = schema.validate({ name, username, password });
-    if (validationResult.error) {
-      console.log(validationResult.error);
-      return res.render("signup", {
-        error: `invalid input: ${validationResult.error.message}`,
-      });
-    }
+    router.post("/submitUser", async (req, res) => {
+        const {name, username, password} = req.body;
 
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+        const schema = Joi.object({
+            name: Joi.string().min(1).required(),
+            username: Joi.string().email().required(),
+            password: Joi.string().max(20).required(),
+        });
 
-    await userCollection.insertOne({
-      name: name,
-      username: username,
-      password: hashedPassword,
-      user_type: "",
-      education: [{credential: "", institution: "", end_date: "", program: ""}],
-      work: [{role: "", company: "", years: "", description: ""}],
-      skills: [],
-      description: "",
-      image: "",
-      media: [{name: "", url: ""}] 
+        const validationResult = schema.validate({name, username, password});
+        if (validationResult.error) {
+            console.log(validationResult.error);
+            return res.render("signup", {
+                error: `invalid input: ${validationResult.error.message}`,
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        await userCollection.insertOne({
+            name: name,
+            username: username,
+            password: hashedPassword,
+            user_type: "",
+            education: [{credential: "", institution: "", end_date: "", program: ""}],
+            work: [{role: "", company: "", years: "", description: ""}],
+            skills: [],
+            description: "",
+            image: "",
+            media: [{name: "", url: ""}]
+        });
+        console.log("Inserted user");
+
+        req.session.authenticated = true;
+        req.session.username = username;
+        req.session.name = name;
+        req.session.cookie.maxAge = expireTime;
+
+
+        res.render("account");
     });
-    console.log("Inserted user");
-
-    req.session.authenticated = true;
-    req.session.username = username;
-    req.session.name = name;
-    req.session.cookie.maxAge = expireTime;
 
 
+    router.get("/login", (req, res) => {
+        const error = req.query.error;
+        res.render("login", {error});
+    });
 
-    res.render("account");
-  });
+    router.post("/loggingin", async (req, res) => {
+        const {username, password} = req.body;
 
-  return router;
+        const schema = Joi.string().email().required();
+        const validationResult = schema.validate(username);
+        if (validationResult.error) {
+            return res.redirect("/login?error=invalid");
+        }
+
+        const result = await userCollection
+            .find({username: username})
+            .project({username: 1, password: 1})
+            .toArray();
+
+        if (result.length !== 1) {
+            return res.redirect("/login?error=invalid");
+        }
+
+        const validPassword = await bcrypt.compare(password, result[0].password);
+        if (!validPassword) {
+            return res.redirect("/login?error=invalid");
+        }
+
+        req.session.authenticated = true;
+        req.session.username = username;
+        req.session.name = result[0].name;
+        req.session.cookie.maxAge = expireTime;
+        req.session.user_id = result[0]._id;
+
+        res.render("account");
+    });
+
+    return router;
 };
 
-// POST login
-const signinFunction = (userCollection) => {
-  // GET login page
-  router.get("/login", (req, res) => {
-    const error = req.query.error;
-    res.render("login", { error });
-  });
-
-  router.post("/loggingin", async (req, res) => {
-    const { username, password } = req.body;
-
-    const schema = Joi.string().email().required();
-    const validationResult = schema.validate(username);
-    if (validationResult.error) {
-      return res.redirect("/login?error=invalid");
-    }
-
-    const result = await userCollection
-      .find({ username: username })
-      .project({ username: 1, password: 1 })
-      .toArray();
-
-    if (result.length !== 1) {
-      return res.redirect("/login?error=invalid");
-    }
-
-    const validPassword = await bcrypt.compare(password, result[0].password);
-    if (!validPassword) {
-      return res.redirect("/login?error=invalid");
-    }
-
-    req.session.authenticated = true;
-    req.session.username = username;
-    req.session.name = result[0].name;
-    req.session.cookie.maxAge = expireTime;
-    req.session.user_id = result[0]._id;
-
-    res.render("account");
-  });
-
-  return router;
-};
-
-module.exports = { signinFunction, signupFunction };
+module.exports = {authRoutes};

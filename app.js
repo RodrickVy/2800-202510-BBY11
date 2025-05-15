@@ -9,9 +9,9 @@ const fs = require("fs");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 app.set("view engine", "ejs");
-const { signinFunction, signupFunction } = require("./routes/authRoutes.js");
-const careerRoutes = require('./routes/careerRoutes');
-
+const { authRoutes } = require("./routes/authRoutes.js");
+const { careerRoutes } = require("./routes/careerRoutes.js");
+const { profileRoutes } = require("./routes/profileRoutes.js");
 // Redirects to notfound if a person tries to access HTML files directly.
 app.use((req, res, next) => {
   const pattern = /^\/app\/[^\/]+\/[^\/]+\.html$/;
@@ -58,15 +58,14 @@ app.use(
 
 // signup and create user
 // mount to the home page
-app.use("/", signupFunction(userCollection));
-
-app.use("/", signinFunction(userCollection));
-app.use('/', careerRoutes);
+app.use("/", authRoutes(userCollection));
+app.use("/", careerRoutes());
+app.use("/", profileRoutes());
 
 
 // Intro page
 app.get("/", async (req, res) => {
-  res.send(await loadPage("./app/home/intro.html"));
+  res.render("home")
 });
 
 // Home page
