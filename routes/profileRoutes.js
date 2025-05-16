@@ -2,9 +2,31 @@ const express = require('express');
 const router = express.Router();
 const multer = require("multer");
 
-const upload = multer({dest: '/userProfiles'});
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "public/userProfiles");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname); // get .jpg, .png, etc.
+    cb(null, uniqueSuffix + ext); // final file name: 169000-somerandom.jpg
+  },
+});
+
+const upload = multer({ storage: storage });
+
 // destructing, only using the ObjectId from mongoDB
 const {ObjectId} = require('mongodb');
+
+function isAuthenticated(req, res, next) {
+    if (req.session.authenticated) {
+        return next();
+    } else {
+        res.redirect("/login");
+    }
+}
 
 const profileRoutes = (userCollection) => {
     router.post('/submitProfile', upload.single('profileImage'), async (req, res) => {
@@ -18,18 +40,17 @@ const profileRoutes = (userCollection) => {
             skills: req.body.skills.split(",").map(skill => skill.trim()),
             interests:[req.body.interests.split(",").map(interest => interest.trim())],
             media: [{name: req.body.socialName, url: req.body.socialURL}],
-            // image: req.file.path,
+            image: req.file.path.replace(/^public[\/\\]/, '').replace(/\\/g, "/")
         }
 
         await userCollection.updateOne(
             {_id: new ObjectId(req.session.user_id)},
             {$set: updates}
         )
-
-        res.send("submitted profile, req.body: " + req.body.firstname + "user id: " + req.session.user_id + 
-            "option is : " + req.body.user_type + "bio is: " + req.body.bio);
+        var html = `<img src="userProfiles/test.PNG" alt="Profile Image" />`
+        res.send(html);
     })
-    router.get("/create-profile", async (req, res) => {
+    router.get("/create-profile", isAuthenticated, async (req, res) => {
         res.render("createProfile", {css: [null]})
     });
 

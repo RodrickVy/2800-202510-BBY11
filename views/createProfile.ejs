@@ -18,16 +18,18 @@
     }
   </style>
   <div class="card shadow-sm p-4" style="max-width: 500px; width: 100%;">
-    <div class="text-center mb-4">
-      <label for="imageInput">
-        <img src="https://via.placeholder.com/100" class="profile-image" id="previewImage" alt="upload Image">
-      </label>
-      <input type="file" id="imageInput" name="image" accept="image/*" onchange="previewImage(event)">
-    </div>
+    
 
     <h2 class="text-center mb-3">Create Profile</h2>
 
     <form action="/submitProfile" method="POST" enctype="multipart/form-data">
+      <div class="text-center mb-4">
+      <label for="imageInput">
+      <img src="https://via.placeholder.com/100" class="profile-image" id="previewImage" alt="upload Image">
+      </label>
+      <input type="file" id="imageInput" name="profileImage" accept="image/*">
+      </div>
+
       <!-- Personal Info -->
       <h2>Personal</h2>
       <input placeholder="First Name*" type="text" id="firstname" name="firstname" class="form-control mb-3" >
@@ -66,15 +68,23 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    function previewImage(event) {
-      const reader = new FileReader();
-      reader.onload = function () {
-        document.getElementById('previewImage').src = reader.result;
-      }
-      reader.readAsDataURL(event.target.files[0]);
-    }
+  window.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("imageInput");
+    const preview = document.getElementById("previewImage");
 
-  </script>
+    input.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          preview.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  });
+</script>
+
 
 
 <%- include('templates/footer') %>
