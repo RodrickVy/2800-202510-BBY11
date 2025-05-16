@@ -1,36 +1,52 @@
-<%- include("templates/header", {css: ['/css/login.css']}) %>
+<%- include("templates/header", {css: ['/css/signup.css']}) %>
 
-<div class="container mt-5">
-  <h1 class="mb-4">Log In</h1>
 
-  <% if (error === 'invalid') { %>
-  <div class="alert alert-danger">Invalid username or password.</div>
-  <% } %>
+<section
+        class="vh-100 bg-image"
+>
+    <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+        <div class="container h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                    <div class="card" style="border-radius: 15px">
+                        <br>
+                        <h1 class="mb-4 text-center p-2">Log In</h1>
+                        <div class="card-body p-5">
 
-  <form action="/loggingin" method="POST" class="mb-3">
-    <div class="mb-3">
-      <input
-        type="text"
-        name="username"
-        placeholder="Email"
-        required
-        class="form-control"
-      />
+
+
+                            <form action="/loggingin" method="POST" class="mb-3">
+                                <div class="mb-3">
+                                    <input
+                                            type="text"
+                                            name="username"
+                                            placeholder="Email"
+                                            required
+                                            class="form-control"
+                                    />
+                                </div>
+                                <div class="mb-3">
+                                    <input
+                                            type="password"
+                                            name="password"
+                                            placeholder="Password"
+                                            required
+                                            class="form-control"
+                                    />
+                                </div>
+                                <% if (error === 'invalid') { %>
+                                    <br>
+                                    <div class="alert alert-danger">Invalid username or password.</div>
+                                <% } %>
+                                <button class="btn btn-primary">Log In</button>
+                            </form>
+                            <br><br>
+                            <a href="/signup" class="btn btn-outline-secondary me-2">Sign Up</a>
+                            <a href="/" class="btn btn-link">Back to home</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="mb-3">
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        required
-        class="form-control"
-      />
-    </div>
-    <button class="btn btn-primary">Log In</button>
-  </form>
-
-  <a href="/signup" class="btn btn-outline-secondary me-2">Sign Up</a>
-  <a href="/" class="btn btn-link">Back to home</a>
-</div>
-
-<%- include("templates/footer") %>
+</section>

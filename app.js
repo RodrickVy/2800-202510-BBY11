@@ -12,6 +12,7 @@ app.set("view engine", "ejs");
 const { authRoutes } = require("./routes/authRoutes.js");
 const { careerRoutes } = require("./routes/careerRoutes.js");
 const { profileRoutes } = require("./routes/profileRoutes.js");
+const {networkRoutes} = require("./routes/networkRoutes.js");
 // Redirects to notfound if a person tries to access HTML files directly.
 app.use((req, res, next) => {
   const pattern = /^\/app\/[^\/]+\/[^\/]+\.html$/;
@@ -61,7 +62,7 @@ app.use(
 app.use("/", authRoutes(userCollection));
 app.use("/", careerRoutes(userCollection));
 app.use("/", profileRoutes(userCollection));
-
+app.use("/", networkRoutes());
 
 // Intro page
 app.get("/", async (req, res) => {
