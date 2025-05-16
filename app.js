@@ -65,7 +65,7 @@ app.use("/", profileRoutes(userCollection));
 
 // Intro page
 app.get("/", async (req, res) => {
-  res.render("home")
+  res.render("home", { css: [null] });
 });
 
 // Home page
