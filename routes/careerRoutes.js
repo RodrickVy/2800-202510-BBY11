@@ -11,6 +11,9 @@ const openai = new OpenAI({
 
 
 const router = express.Router();
+const careersPath = path.join(__dirname, '../app/career_planner/careers.json');
+const rawData = fs.readFileSync(careersPath, 'utf8');
+const careers = JSON.parse(rawData);
 
 const careerQuiz = {
     title: "BCIT Connect – Career Path Quiz",
@@ -133,7 +136,7 @@ const careerQuiz = {
     ]
 };
 
-const careerRoutes = () => {
+const careerRoutes = (userCollection) => {
     router.get("/career_quiz", (req, res) => {
         res.render("careerQuiz", {error: null, title: " Career Quiz", ...careerQuiz});
     });
@@ -141,41 +144,54 @@ const careerRoutes = () => {
 // POST route to handle form submission
     router.post("/submitCareerQuiz", async (req, res) => {
         const quizAnswers = req.body.quizAnswers;
+        console.log(quizAnswers)
 
-        // const result = await userCollection
-        //     .find({ username: req.session.username })
-        //     .project({ username: 1, password: 1 })
-        //     .toArray();
+        const result = await userCollection
+            .find({ username: req.session.username })
+            .project({
+                username: 1,
+                password: 1,
+                user_type: 1,
+                education: 1,
+                work: 1,
+                skills: 1,
+                description: 1,
+                image: 1,
+                media: 1
+            })
+            .toArray();
 
-        // if (result.length !== 1) {
-        //     return res.redirect("/login?error=invalid");
-        // }
+
+        if (result.length !== 1) {
+            return res.redirect("/login?error=invalid");
+        }
 
         const userProfile = {
-            // ...result[0]
+            ...result[0]
         };
 
         console.log(userProfile);
 
         const prompt = `
-Use the following answers and profile details to analyze and recommend suitable tech career options. 
-Format your response like this for each career:
-
-Name Of Career: official career name  
-Description of career: 1 paragraph description  
-Skills for career: at least 10 skills  
-Average pay for career: in dollars yearly salary  
-Similar roles: a list of at least 5  
-Why this career suits me: 1 paragraph  
-
-Q&A: 
-${quizAnswers}
-
-Profile: 
-${JSON.stringify(userProfile, null, 2)}
-
-Return only careers that strongly align based on the user's answers and background.
-`;
+                You are a career advisor. Based on the answers given to these questions (Q&A), as-well as the profile recommend 3 tech career paths that would match.
+                Your entire response should be in this format for each career:
+                
+                Name Of Career: official career name  
+                Description of career: 1 paragraph description  
+                Skills for career: at least 10 skills comma seperated  
+                Average pay for career: in dollars yearly salary  
+                Similar roles: a list of at least 5  comma seperated
+                Why this career suits me: 1 paragraph  
+                average start salary: a range e.g 68k-80k
+                average median salary:a range e.g 68k-80k
+                
+                Q&A: 
+                ${quizAnswers}
+                
+                Profile: 
+                ${JSON.stringify(userProfile, null, 2)}
+                
+                Return only careers that strongly align based on the user's answers and background.`;
 
         try {
 
@@ -184,8 +200,8 @@ Return only careers that strongly align based on the user's answers and backgrou
                 messages: [{role: "user", content: prompt}],
                 temperature: 0.7,
             });
-
-            const gptResponse = completion.data.choices[0].message.content;
+            console.log(completion)
+            const gptResponse = completion.choices[0].message.content;
 
             res.render("careerQuizResults", {
                 title: "Career Suggestions",
@@ -202,9 +218,7 @@ Return only careers that strongly align based on the user's answers and backgrou
 
     router.get('/careers', (req, res) => {
         try {
-            const careersPath = path.join(__dirname, '../app/career_planner/careers.json');
-            const rawData = fs.readFileSync(careersPath, 'utf8');
-            const careers = JSON.parse(rawData);
+
             res.render('careers', {careers});
         } catch (err) {
             console.error("Failed to load career data:", err);

@@ -59,7 +59,7 @@ app.use(
 // signup and create user
 // mount to the home page
 app.use("/", authRoutes(userCollection));
-app.use("/", careerRoutes());
+app.use("/", careerRoutes(userCollection));
 app.use("/", profileRoutes());
 
 
