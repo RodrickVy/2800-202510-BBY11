@@ -2,9 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require("multer");
 const path = require('path');
-const { ObjectId } = require('mongodb');
 
-const path = require("path");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -40,7 +38,7 @@ const profileRoutes = (userCollection) => {
             education: [{credentials: req.body.credentials, institution: req.body.institution, endyear: req.body.endyear, program: req.body.program}],
             work: [{role: req.body.role, company: req.body.company, years: req.body.years, description: req.body.description}],
             skills: req.body.skills.split(",").map(skill => skill.trim()),
-            interests:[req.body.interests.split(",").map(interest => interest.trim())],
+            interests:req.body.interests.split(",").map(interest => interest.trim()),
             media: [{name: req.body.socialName, url: req.body.socialURL}],
             image: req.file.path.replace(/^public[\/\\]/, '').replace(/\\/g, "/")
         }
