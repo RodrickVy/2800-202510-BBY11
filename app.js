@@ -60,12 +60,12 @@ app.use(
 // mount to the home page
 app.use("/", authRoutes(userCollection));
 app.use("/", careerRoutes(userCollection));
-app.use("/", profileRoutes());
+app.use("/", profileRoutes(userCollection));
 
 
 // Intro page
 app.get("/", async (req, res) => {
-  res.render("home")
+  res.render("home", { css: [null] });
 });
 
 // Home page
