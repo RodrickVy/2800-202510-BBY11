@@ -2,7 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 
-const {OpenAI} = require("openai");
+const { OpenAI } = require("openai");
 
 // OpenAI setup (use your own API key via env or config)
 const openai = new OpenAI({
@@ -138,10 +138,10 @@ const careerQuiz = {
 
 const careerRoutes = (userCollection) => {
     router.get("/career_quiz", (req, res) => {
-        res.render("careerQuiz", {error: null, title: " Career Quiz", ...careerQuiz});
+        res.render("careerQuiz", { error: null, title: " Career Quiz", ...careerQuiz });
     });
 
-// POST route to handle form submission
+    // POST route to handle form submission
     router.post("/submitCareerQuiz", async (req, res) => {
         const quizAnswers = req.body.quizAnswers;
         console.log(quizAnswers)
@@ -197,7 +197,7 @@ const careerRoutes = (userCollection) => {
 
             const completion = await openai.chat.completions.create({
                 model: "gpt-3.5-turbo",
-                messages: [{role: "user", content: prompt}],
+                messages: [{ role: "user", content: prompt }],
                 temperature: 0.7,
             });
             console.log(completion)
@@ -218,8 +218,20 @@ const careerRoutes = (userCollection) => {
 
     router.get('/careers', (req, res) => {
         try {
+            const careersPath = path.join(__dirname, '../app/career_planner/careers.json');
+            const rawData = fs.readFileSync(careersPath, 'utf8');
+            const careers = JSON.parse(rawData);
 
-            res.render('careers', {careers});
+            // Map to only send necessary data to the listing page
+            const careerList = careers.map(career => ({
+                title: career.title,
+                summary: career.summary,
+                slug: career.slug
+            }));
+            res.render('careers', {
+                title: "Career Paths",
+                careers: careerList
+            });
         } catch (err) {
             console.error("Failed to load career data:", err);
             res.status(500).render('error', {
@@ -229,10 +241,35 @@ const careerRoutes = (userCollection) => {
         }
     });
 
+    router.get('/careers/:slug', (req, res) => {
+        try {
+            const careersPath = path.join(__dirname, '../app/career_planner/careers.json');
+            const rawData = fs.readFileSync(careersPath, 'utf8');
+            const careers = JSON.parse(rawData);
+
+            const career = careers.find(c => c.slug === req.params.slug);
+
+            if (!career) {
+                return res.status(404).render('404');
+            }
+
+            res.render('careerDetails', {
+                title: career.title,
+                career
+            });
+        } catch (err) {
+            console.error("Failed to load career data:", err);
+            res.status(500).render('error', {
+                message: "Failed to load career details",
+                error: err
+            });
+        }
+    });
+
     return router;
 };
 
-module.exports = {careerRoutes};
+module.exports = { careerRoutes };
 
 
 
