@@ -109,3 +109,124 @@ body {
     left: 25%;
     border-radius: 2px;
 }
+
+
+
+/* Career Detail Page Styles */
+.career-detail-header {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 3rem 0 2rem;
+    margin-bottom: 2rem;
+    border-bottom: 3px solid var(--accent-yellow);
+}
+
+.career-detail-header h1 {
+    display: inline-block;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.career-detail-header h1:after {
+
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: var(--accent-yellow);
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+
+
+}
+
+.detail-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid var(--accent-yellow);
+    margin-bottom: 2rem;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.detail-card:hover {
+    transform: translateY(-5px);
+}
+
+.detail-card-body {
+    padding: 2rem;
+}
+
+.section-title {
+    display: inline-block;
+    color: var(--primary-blue);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.section-title:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background: var(--accent-yellow);
+    bottom: 0;
+    left: 0;
+}
+
+.skill-badge {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    margin: 0.25rem;
+    display: inline-block;
+}
+
+.responsibilities-list li {
+    list-style: none;
+    margin-bottom: 0.75rem;
+    padding-left: 1.5rem;
+    position: relative;
+    line-height: 1.6;
+}
+
+.responsibilities-list li:before {
+    content: '•';
+    color: var(--accent-yellow);
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+.btn-back {
+    background-color: var(--accent-yellow);
+    color: var(--primary-blue);
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-weight: 600;
+    margin-top: 1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+    background-color: white;
+    color: var(--primary-blue);
+    transform: translateY(-2px);
+}
+
+.highlight-box {
+    background-color: rgba(1, 60, 112, 0.05);
+    border-left: 4px solid var(--primary-blue);
+    padding: 1.5rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+}
