@@ -47,8 +47,7 @@ const profileRoutes = (userCollection) => {
             {_id: new ObjectId(req.session.user_id)},
             {$set: updates}
         )
-        var html = `<img src="userProfiles/test.PNG" alt="Profile Image" />`
-        res.send(html);
+        res.render("account");
     })
     router.get("/create-profile", isAuthenticated, async (req, res) => {
         res.render("createProfile", {css: [null]})
