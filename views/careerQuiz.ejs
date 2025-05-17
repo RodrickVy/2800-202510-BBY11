@@ -48,7 +48,7 @@
 
                         <div class="mt-4 d-flex justify-content-between">
                             <button type="button" style="background: #F3F2F3;color: #555555" class="btn btn-explore   prev-btn" <%= i === 0 ? 'disabled' : '' %>>Previous</button>
-                            <button type="button" class="btn btn-explore btn-primary next-btn"><%= i === questions.length - 1 ? 'Submit' : 'Next' %></button>
+                            <button type="button" class="btn btn-explore btn-primary next-btn"><%= i === questions.length - 1 ? "🪄 Generate": 'Next' %></button>
                         </div>
                     </div>
                 <% }) %>
@@ -57,8 +57,7 @@
             </form>
 
             <div id="result" class="mt-5" style="display: none;">
-                <h5>Thank you! Here are your answers:</h5>
-                <pre id="answersJson" class="bg-light p-3 border rounded"></pre>
+                <h5>cooking your report....</h5>
             </div>
         </div>
     </div>
@@ -91,7 +90,7 @@
                 });
 
                 document.getElementById('result').style.display = 'block';
-                document.getElementById('answersJson').textContent = JSON.stringify(answers, null, 2);
+                // document.getElementById('answersJson').textContent = JSON.stringify(answers, null, 2);
 
                 const formatted = Object.entries(answers)
                     .map(([key, val]) => `${key}: ${val}`)
