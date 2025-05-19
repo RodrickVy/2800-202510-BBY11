@@ -1,0 +1,29 @@
+<fieldset class="border p-3 mb-3 rounded shadow-sm">
+    <div class="row g-3 align-items-center">
+
+        <div class="col-md-3">
+            <label for="role_<%= index %>" class="form-label">Role</label>
+            <input type="text" class="form-control" id="role_<%= index %>" name="role" placeholder="e.g. Developer" />
+        </div>
+
+        <div class="col-md-3">
+            <label for="company_<%= index %>" class="form-label">Company</label>
+            <input type="text" class="form-control" id="company_<%= index %>" name="company" placeholder="e.g. Google" />
+        </div>
+
+        <div class="col-md-2">
+            <label for="years_<%= index %>" class="form-label">Years</label>
+            <input type="text" class="form-control" id="years_<%= index %>" name="years" placeholder="e.g. 2021–2023" />
+        </div>
+
+        <div class="col-md-3">
+            <label for="description_<%= index %>" class="form-label">Description</label>
+            <input type="text" class="form-control" id="description_<%= index %>" name="description" placeholder="Short summary of role" />
+        </div>
+
+        <div class="col-md-1 d-flex align-items-end">
+            <button type="button" class="btn btn-outline-danger remove-btn w-100">Remove</button>
+        </div>
+
+    </div>
+</fieldset>

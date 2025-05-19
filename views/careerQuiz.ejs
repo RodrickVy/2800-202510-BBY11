@@ -61,6 +61,7 @@
             </div>
         </div>
     </div>
+
 </div>
 
 <script>
@@ -84,6 +85,7 @@
                 showStep(currentStep + 1);
             } else {
                 const answers = {};
+                const questions = <%- JSON.stringify(questions) %>;
                 steps.forEach((step, i) => {
                     const selected = step.querySelector('input[type="radio"]:checked');
                     if (selected) answers[`Q${i + 1}`] = selected.value;
@@ -92,9 +94,11 @@
                 document.getElementById('result').style.display = 'block';
                 // document.getElementById('answersJson').textContent = JSON.stringify(answers, null, 2);
 
-                const formatted = Object.entries(answers)
-                    .map(([key, val]) => `${key}: ${val}`)
-                    .join(' | ');
+                let formatted ='';
+
+                Object.values(answers).forEach((value, index) => {
+                    formatted += questions[index].question + ": " + value + "\n";
+                });
                 document.getElementById('quizAnswers').value = formatted;
 
                 document.getElementById('quizForm').submit();

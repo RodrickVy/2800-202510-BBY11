@@ -1,13 +1,126 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <% css.forEach(file=> { %>
-        <link rel="stylesheet" href="<%= file %>" />
-    <% }) %>
-    <title>Document</title>
-</head>
-<body>
+<div class="container  py-5">
+
+
+        <!-- Profile Card -->
+        <div class="container mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <img src="<%= userData.image || '/default-profile.png' %>" alt="Profile Image" class="rounded-circle mb-3" width="150" height="150">
+                    <h4><%= userData.name %> <%= userData.lastname %></h4>
+                    <p class="text-secondary mb-1">
+                        <%= userData.work && userData.work[0]?.role ? userData.work[0].role : 'No role listed' %>
+                    </p>
+                    <p class="text-muted">
+                        <%= userData.bio || 'No bio provided.' %>
+                    </p>
+                    <a href="/create-profile" class="btn btn-primary" style="background-color:#013C70" id="meet-btn">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Work Experience Section -->
+        <div class="container mb-4">
+            <h5 class="mb-3">Work Experience</h5>
+            <div class="row g-3">
+                <% if (userData.work && userData.work.length > 0) { %>
+                    <% userData.work.forEach((job, index) => { %>
+                        <div class="col-12  ">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title"><%= job.role || 'Untitled Role' %></h6>
+                                    <p class="mb-1"><strong>Company:</strong> <%= job.company || 'N/A' %></p>
+                                    <p class="mb-1"><strong>Years:</strong> <%= job.years || 'N/A' %></p>
+                                    <p class="text-muted"><%= job.description || 'No description provided.' %></p>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p class="text-muted">No work experience added yet.</p>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Education Section -->
+        <div class="container mb-4">
+            <h5 class="mb-3">Education</h5>
+            <div class="row g-3">
+                <% if (userData.education && userData.education.length > 0) { %>
+                    <% userData.education.forEach((edu, index) => { %>
+                        <div class="col-12  ">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title"><%= edu.credentials || 'Untitled Credential' %></h6>
+                                    <p class="mb-1"><strong>Institution:</strong> <%= edu.institution || 'N/A' %></p>
+                                    <p class="mb-1"><strong>Program:</strong> <%= edu.program || 'N/A' %></p>
+                                    <p class="mb-1"><strong>End Year:</strong> <%= edu.endyear || 'N/A' %></p>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <p class="text-muted">No education history added yet.</p>
+                <% } %>
+            </div>
+        </div>
+
+        <% if (userData.media && userData.media.length > 0) { %>
+            <div class="mt-5">
+                <h5 class="mb-3">Social Links</h5>
+                <div class="row g-3">
+
+                    <% userData.media.forEach((social, index) => { %>
+                        <% if (social.site && social.url) { %>
+                            <div class="col-12 col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title mb-1"><%= social.site %></h6>
+                                        <a href="<%= social.url %>" target="_blank" class="text-primary text-decoration-underline">
+                                            <%= social.url %>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } else { %>
+                                <p class="text-muted mt-4">Invalid link provided</p>
+                            <% } %>
+                    <% }); %>
+
+                </div>
+            </div>
+        <% } else { %>
+            <p class="text-muted mt-4">No social links added.</p>
+        <% } %>
+
+    <% if ((userData.skills && userData.skills.length > 0) || (userData.interests && userData.interests.length > 0)) { %>
+        <div class="mt-5">
+            <% if (userData.skills && userData.skills.length > 0) { %>
+                <h5 class="mb-2">Skills</h5>
+                <div class="mb-3">
+                    <% userData.skills.forEach(skill => { %>
+                        <span class="badge bg-primary me-2 mb-2"><%= skill %></span>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <p class="text-muted">No skills listed.</p>
+            <% } %>
+
+            <% if (userData.interests && userData.interests.length > 0) { %>
+                <h5 class="mb-2 mt-4">Interests</h5>
+                <div>
+                    <% userData.interests.forEach(interest => { %>
+                        <span class="badge bg-success me-2 mb-2"><%= interest %></span>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <p class="text-muted">No interests listed.</p>
+            <% } %>
+        </div>
+    <% } else { %>
+        <p class="text-muted mt-4">No skills or interests added yet.</p>
+    <% } %>
+
+
+</div>

@@ -19,6 +19,7 @@ const upload = multer({ storage: storage });
 
 // destructing, only using the ObjectId from mongoDB
 const {ObjectId} = require('mongodb');
+const bcrypt = require("bcrypt");
 
 function isAuthenticated(req, res, next) {
     if (req.session.authenticated) {
@@ -29,37 +30,86 @@ function isAuthenticated(req, res, next) {
 }
 
 const profileRoutes = (userCollection) => {
-    router.post('/submitProfile', upload.single('profileImage'), async (req, res) => {
-        const updates = {
-            name: req.body.firstname,
-            lastname: req.body.lastname,
-            user_type: req.body.user_type,
-            bio: req.body.bio,
-            education: [{credentials: req.body.credentials, institution: req.body.institution, endyear: req.body.endyear, program: req.body.program}],
-            work: [{role: req.body.role, company: req.body.company, years: req.body.years, description: req.body.description}],
-            skills: req.body.skills.split(",").map(skill => skill.trim()),
-            interests:req.body.interests.split(",").map(interest => interest.trim()),
-            media: [{name: req.body.socialName, url: req.body.socialURL}],
-            image: req.file.path.replace(/^public[\/\\]/, '').replace(/\\/g, "/")
-        }
-
-        await userCollection.updateOne(
-            {_id: new ObjectId(req.session.user_id)},
-            {$set: updates}
-        )
-        res.render("account");
-    })
-    router.get("/create-profile", isAuthenticated, async (req, res) => {
-        res.render("createProfile", {css: [null]})
-    });
-
-    router.get("/createprofile2", async (req, res) => {
-        res.render("createProfile2")
-    });
 
     router.get("/account", async (req, res) => {
-        res.render("account")
+        if(req.session.authenticated) {
+
+            const result = await userCollection
+                .find({ username: req.session.username })
+                .project({
+                    username: 1,
+                    name:1,
+                    lastname:1,
+                    password: 1,
+                    user_type: 1,
+                    education: 1,
+                    work: 1,
+                    skills: 1,
+                    interests:1,
+                    bio: 1,
+                    image: 1,
+                    media: 1
+                })
+                .toArray();
+
+
+            if (result.length !== 1) {
+                return res.redirect("/login?error=invalid");
+            }
+
+
+
+            req.session.userProfile  = {
+                ...result[0]
+            };
+            console.log(req.session.userProfile)
+            res.render("account",{userData: req.session.userProfile});
+        }else{
+            res.redirect("/login");
+        }
+
     });
+
+    router.post('/submitProfile', upload.single('profileImage'), async (req, res) => {
+        try {
+            const defaultImagePath = "userProfiles/default.png"; // this should exist in your /public/userProfiles folder
+            console.log("Bio"+req.body.bio);
+            const updates = {
+                name: req.body.firstname,
+                lastname: req.body.lastname,
+                user_type: req.body.user_type,
+                bio: req.body.bio,
+                education: JSON.parse(req.body.education),
+                work: JSON.parse(req.body.workExp),
+                skills: req.body.skills.split(",").map(skill => skill.trim()),
+                interests: req.body.interests.split(",").map(interest => interest.trim()),
+                media: JSON.parse(req.body.media),
+                image: req.file
+                    ? req.file.path.replace(/^public[\/\\]/, '').replace(/\\/g, "/")
+                    : defaultImagePath
+            };
+
+            await userCollection.updateOne(
+                { _id: new ObjectId(req.session.user_id) },
+                { $set: updates }
+            );
+
+            res.redirect("/account");
+        } catch (error) {
+            console.error("Profile submission failed:", error);
+            res.status(500).send("An error occurred while submitting the profile.");
+        }
+    });
+
+
+
+    router.get("/create-profile", isAuthenticated, async (req, res) => {
+       console.log("Some data" +req.session.userProfile)
+
+        res.render("createProfile", {userData:  req.session.userProfile});
+    });
+
+
 
     return router;
 }

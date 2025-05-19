@@ -1,81 +1,46 @@
 
 
 <%- include('templates/header',{css:["css/index.css"]}) %>
-<br><br><br>
-<div class="container-fluid">
 
-    <div class="d-flex flex-wrap align-items-center justify-content-between">
-      <!-- Profile Card -->
-      <div class="col-12 col-md-4 mb-3">
-        <div class="card">
-          <div class="card-body text-center">
-            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle mb-3" width="150">
-            <h4>John Doe</h4>
-            <p class="text-secondary mb-1">Full Stack Developer</p>
-            <p class="text-muted font-size-sm" id="city-display">Your city will display here</p>
-            <p class="text-muted font-size-sm">bio</p>
-            <button class="btn btn-primary" style="background-color:#013C70" id="meet-btn">Edit/Meet</button>
-          </div>
+
+
+<%- include('templates/profile', {userData:userData}) %>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-8">
+
+      <!-- Settings Header -->
+      <div class="mb-4">
+        <h1 class="mb-1">Settings</h1>
+
+      </div>
+
+      <!-- Availability Section -->
+      <div class="card mb-5 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Your Location</h5>
+          <p class="text-muted" id="city-display">Your city will display here</p>
+        </div>
+      </div>
+      <!-- Availability Section -->
+      <div class="card mb-5 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">Availability</h5>
+          <p class="text-muted">You can configure your availability here in the future.</p>
         </div>
       </div>
 
-      <!-- Education Details -->
-      <div class="col-12 col-md-4 mb-3">
-        <div class="card h-100">
-          <div class="card-body">
-            <div class="row mb-2">
-              <div class="col-sm-4"><strong>Institution:</strong></div>
-              <div class="col-sm-8 text-secondary">BCIT</div>
-            </div>
-            <div class="row mb-2">
-              <div class="col-sm-4"><strong>Program:</strong></div>
-              <div class="col-sm-8 text-secondary">CST</div>
-            </div>
-            <div class="row mb-2">
-              <div class="col-sm-4"><strong>End Year:</strong></div>
-              <div class="col-sm-8 text-secondary">2026</div>
-            </div>
-            <div class="row mb-2">
-              <div class="col-sm-4"><strong>Credentials:</strong></div>
-              <div class="col-sm-8 text-secondary">N/A</div>
-            </div>
-          </div>
-        </div>
+      <!-- Logout Button -->
+      <div class="d-flex justify-content-center">
+        <a href="/logout" class="btn btn-danger px-4" id="meet-btn">
+          <i class="fas fa-sign-out-alt me-2"></i> Logout
+        </a>
       </div>
 
-      <!-- Social Media -->
-      <div class="col-12 col-md-4">
-        <div class="card h-100">
-          <ul class="list-group list-group-flush">
-            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-              <h6 class="mb-0"><i class="feather feather-globe mr-2"></i>Website</h6>
-              <span class="text-secondary">https://bootdey.com</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-              <h6 class="mb-0"><i class="feather feather-github mr-2"></i>Github</h6>
-              <span class="text-secondary">bootdey</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-              <h6 class="mb-0 text-info"><i class="feather feather-twitter mr-2"></i>Twitter</h6>
-              <span class="text-secondary">@bootdey</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-              <h6 class="mb-0 text-danger"><i class="feather feather-instagram mr-2"></i>Instagram</h6>
-              <span class="text-secondary">bootdey</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-              <h6 class="mb-0 text-primary"><i class="feather feather-facebook mr-2"></i>Facebook</h6>
-              <span class="text-secondary">bootdey</span>
-            </li>
-          </ul>
-        </div>
-      </div>
     </div>
-
-  <%- include('templates/footer', {currentPage:'account'}) %>
-
+  </div>
 </div>
-
 
 <script>
   function getUserLocation() {
@@ -110,7 +75,7 @@
         (error) => {
           console.error("Error getting location:", error.message);
           document.getElementById("city-display").textContent =
-            "Location access denied.";
+            "Location access denied. Please allow location tracking.";
         }
       );
     } else {
@@ -123,3 +88,4 @@
 
   getUserLocation();
 </script>
+<%- include('templates/footer', {currentPage:'account'}) %>

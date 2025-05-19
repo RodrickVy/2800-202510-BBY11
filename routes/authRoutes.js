@@ -36,30 +36,49 @@ const authRoutes = (userCollection) => {
             password: hashedPassword,
             lastname: "",
             user_type: "",
-            education: [{credentials: "", institution: "", endyear: "", program: ""}],
-            work: [{role: "", company: "", years: "", description: ""}],
-            skills: [],
+            education: [{credentials: "Degree", institution: "BCIT", endyear: "2027", program: " Computer Science"}],
+            work: [{role: "Student Developer", company: "BCIT", years: "2024-2025", description: " Worked as a IT department head for a while."}],
+            skills: ["Development","AGILE","Windows","Figma"],
             bio: "",
-            interests: [],
+            interests: ["Programing","Music", "Engineering"],
             image: "",
             media: [{name: "", url: ""}]
         });
         console.log("Inserted user");
 
         const result = await userCollection
-            .find({username: username})
-            .project({username: 1, password: 1})
+            .find({ username:  username })
+            .project({
+                username: 1,
+                name:1,
+                lastname:1,
+                password: 1,
+                user_type: 1,
+                education: 1,
+                interests:1,
+                work: 1,
+                skills: 1,
+                bio: 1,
+                image: 1,
+                media: 1
+            })
             .toArray();
+        if (result.length !== 1) {
+            return res.redirect("/login?error=invalid");
+        }
 
-
+        const userProfile = {
+            ...result[0]
+        };
         req.session.authenticated = true;
         req.session.username = username;
         req.session.name = name;
         req.session.cookie.maxAge = expireTime;
+        req.session.userProfile = userProfile;
         req.session.user_id = result[0]._id;
 
 
-        res.render("createProfile", {css: [null]});
+        res.redirect("create-profile")
     });
 
 
@@ -78,9 +97,23 @@ const authRoutes = (userCollection) => {
         }
 
         const result = await userCollection
-            .find({username: username})
-            .project({username: 1, password: 1})
+            .find({ username: username })
+            .project({
+                username: 1,
+                name:1,
+                lastname:1,
+                password: 1,
+                interests:1,
+                user_type: 1,
+                education: 1,
+                work: 1,
+                skills: 1,
+                bio: 1,
+                image: 1,
+                media: 1
+            })
             .toArray();
+
 
         if (result.length !== 1) {
             return res.redirect("/login?error=invalid");
@@ -91,13 +124,35 @@ const authRoutes = (userCollection) => {
             return res.redirect("/login?error=invalid");
         }
 
+
+
+        if (result.length !== 1) {
+            return res.redirect("/login?error=invalid");
+        }
+
+        const userProfile = {
+            ...result[0]
+        };
         req.session.authenticated = true;
         req.session.username = username;
+        req.session.userProfile = userProfile;
         req.session.name = result[0].name;
         req.session.cookie.maxAge = expireTime;
         req.session.user_id = result[0]._id;
 
-        res.render("account");
+        res.redirect("/account");
+    });
+
+
+    router.get("/logout", (req, res) => {
+        req.session.destroy((err) => {
+            if (err) {
+                console.error("Session destruction error:", err);
+                return res.redirect("/login?error=logout-failed");
+            }
+            res.clearCookie("connect.sid"); // Optional, good practice
+            res.redirect("/login");
+        });
     });
 
     return router;
