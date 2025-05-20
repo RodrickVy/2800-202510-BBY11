@@ -1,6 +1,6 @@
 require("dotenv").config();
 const express = require("express");
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 4300;
 const { loadPage, getCareerIcon } = require('./util.js');
 const app = express();
 app.locals.getCareerIcon = getCareerIcon;

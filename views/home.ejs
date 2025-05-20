@@ -1,4 +1,4 @@
-<%- include('templates/header') %>
+<%- include('templates/header',{css:[]}) %>
 
 <!-- Font Awesome CDN -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -10,18 +10,19 @@
         <!-- Search Input with Icon -->
         <div class="col-12 col-md-6">
             <div class="input-group input-group-lg">
-        <span class="input-group-text bg-white border-end-0">
-          <i class="fas fa-search text-muted"></i>
-        </span>
-                <input type="text" class="form-control border-start-0" placeholder="Search..." />
+                <input id="search" type="text" class="form-control" placeholder="Search..." aria-label="Search" />
+
+                <a id="searchBtn" class="btn btn-outline-primary" type="button">
+                    <i class="fas fa-search me-1"></i> Search
+                </a>
             </div>
         </div>
 
         <!-- AI Match Button -->
         <div class="col-6 col-md-auto">
-            <button class="btn btn-primary w-100">
+            <a href="/match-alumni" class="btn btn-primary w-100">
                 <i class="fas fa-wand-magic-sparkles me-2"></i> AI Match
-            </button>
+            </a>
         </div>
 
         <!-- Leaderboard Button -->
@@ -33,8 +34,58 @@
 
     </div>
 </div>
+<br><br>
+
+<div class="container py-5">
 
 
+    <div class="row g-4">
+        <% alumni.forEach(user => { %>
+            <div class="col-12">
+                <div class="card shadow-sm h-100">
+                    <div class="row g-0 align-items-center">
+
+                        <!-- Image Column -->
+                        <div class="col-md-3 text-center p-3">
+                            <img src="<%= user.image || '/default-profile.png' %>" class="rounded-circle img-fluid" style="width: 120px; height: 120px; object-fit: cover;" alt="Profile">
+                        </div>
+
+                        <!-- Info Column -->
+                        <div class="col-md-9">
+                            <div class="card-body">
+                                <h5 class="card-title mb-1"><%= user.name %> <%= user.lastname %></h5>
+                                <p class="text-muted mb-2">
+                                    <%= user.work?.[0]?.role || 'No current role listed' %>
+                                </p>
+
+                                <% if (user.work && user.work.length > 0) { %>
+                                    <ul class="list-group list-group-flush">
+                                        <% user.work.forEach((job, i) => { %>
+                                            <li class="list-group-item px-0">
+                                                <strong><%= job.role %></strong> at <%= job.company %><br>
+                                                <small class="text-muted"><%= job.years %></small><br>
+                                                <em><%= job.description %></em>
+                                            </li>
+                                        <% }); %>
+                                    </ul>
+                                <% } else { %>
+                                    <p class="text-muted">No work history available.</p>
+                                <% } %>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+</div>
+<script>
+
+    document.getElementById("search").addEventListener("input", (event) => {
+        document.getElementById("searchBtn").setAttribute("href","/search?query="+document.getElementById("search").value)
+    })
+</script>
 
 <%- include('templates/footer', {currentPage:'home'}) %>
 

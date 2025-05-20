@@ -155,6 +155,7 @@ const careerRoutes = (userCollection) => {
                 password: 1,
                 user_type: 1,
                 education: 1,
+                points:1,
                 work: 1,
                 skills: 1,
                 interests:1,

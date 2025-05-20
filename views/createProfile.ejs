@@ -1,6 +1,6 @@
 <%- include('templates/header',{css:["css/index.css"]}) %>
 <div class="bg-light d-flex justify-content-center align-items-center" style="min-height: 100vh;">
- <style>
+  <style>
     .profile-image {
       width: 150px;
       height: 150px;
@@ -16,9 +16,8 @@
       display: none;
     }
   </style>
-  <div class="card shadow-sm p-4" style="max-width: 500px; width: 100%;">
-    
 
+  <div class="  shadow-sm p-4" style="max-width: 800px; width: 100%;">
     <h2 class="text-center mb-3">Create Profile</h2>
 
     <form id="form" action="/submitProfile" method="POST" enctype="multipart/form-data">
@@ -34,14 +33,15 @@
       <label for="firstname">Name: </label><input value="<%=userData.name%>" placeholder="First Name" type="text" id="firstname" name="firstname" class="form-control mb-3" >
       <label for="lastname">Last name: </label><input value="<%=userData.lastname%>" placeholder="Last Name" type="text" id="lastname" name="lastname" class="form-control mb-3" >
 
-      <label for="options">Status : </label><select value="<%=userData.user_type%>" name="user_type" id="options" class="form-select mb-3">
-        <option value="student">Student</option>
-        <option value="alumni">Alumni</option>
+      <label for="options">Status:</label>
+      <%= userData.user_type.toLowerCase()%>
+      <select name="user_type" id="options" class="form-select">
+        <option value="student" <%= userData.user_type.toLowerCase() === 'student' ? 'selected' : '' %>>Student</option>
+        <option value="alumni" <%= userData.user_type.toLowerCase() === 'alumni' ? 'selected' : '' %>>Alumni</option>
       </select>
 
-      <label for="bio"></label><textarea placeholder="Bio*" type="textarea" id="bio" name="bio" class="form-control mb-3" >
-         <%=userData.bio%>
-      </textarea>
+      <label for="bio"></label>
+      <textarea  type="textarea" id="bio" name="bio" class="form-control mb-3" ><%=userData.bio.trim()%></textarea>
       <br><br>
       <!-- Education -->
       <h2>Education</h2>
