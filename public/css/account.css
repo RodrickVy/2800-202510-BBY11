@@ -1,0 +1,174 @@
+:root {
+    --primary-blue: #013C70;
+    --light-gray: #F3F2F3;
+    --accent-yellow: #F2E205;
+    --off-white: #FFFFFF;
+}
+
+/* Timeline styling */
+.timeline {
+    position: relative;
+    padding-left: 1rem;
+}
+
+.timeline-item {
+    position: relative;
+}
+
+.timeline-badge {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.timeline-line {
+    position: absolute;
+    left: 20px;
+    top: 40px;
+    bottom: -20px;
+    width: 2px;
+    background-color: #dee2e6;
+}
+
+/* Card hover effects */
+.hover-shadow {
+    transition: all 0.3s ease;
+}
+
+.hover-shadow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Section title underline */
+.section-title {
+    display: inline-block;
+    color: var(--primary-blue);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 8px;
+}
+
+.section-title:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background: var(--accent-yellow);
+    bottom: 0;
+    left: 0;
+    border-radius: 2px;
+}
+
+/* Page title underline */
+.page-title {
+    position: relative;
+    display: inline-block;
+    color: var(--primary-blue);
+    font-weight: bold;
+}
+
+.page-title:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: var(--accent-yellow);
+    bottom: -10px;
+    left: 0%;
+    border-radius: 2px;
+}
+
+/* Career card styling */
+.career-card {
+    border-radius: 10px;
+    border-left: 5px solid var(--accent-yellow);
+    background-color: var(--off-white);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Badge consistency */
+.badge-blue {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+.badge-yellow-outline {
+    background-color: transparent;
+    border: 1px solid var(--accent-yellow);
+    color: var(--primary-blue);
+}
+
+/* Action Buttons */
+.btn-action {
+    background-color: var(--off-white);
+    color: var(--primary-blue);
+    border: 1px solid var(--primary-blue);
+    border-radius: 8px;
+    padding: 0.5rem 1.25rem;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-action:hover {
+    background-color: var(--primary-blue);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(1, 60, 112, 0.2);
+}
+
+.btn-logout {
+    background-color: #dc3545;
+    color: white;
+    border-radius: 8px;
+    padding: 0.5rem 1.25rem;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-logout:hover {
+    background-color: #bb2d3b;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
+}
+
+/* Edit Availability Button Styles */
+.btn-availability {
+    background-color: var(--light-gray);
+    color: var(--primary-blue);
+    border: none;
+    border-radius: 20px;
+    padding: 0.35rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-left: 1rem;
+}
+
+.btn-availability:hover {
+    background-color: var(--primary-blue);
+    color: var(--accent-yellow);
+    box-shadow: 0 2px 8px rgba(1, 60, 112, 0.2);
+}
+
+
+/* Adjust section title alignment */
+.section-title {
+    vertical-align: middle;
+    margin-bottom: 1rem !important;
+}
+
+/* Responsive button group */
+@media (max-width: 768px) {
+    .d-flex.justify-content-center.gap-3 {
+        gap: 0.5rem !important;
+    }
+
+    .btn-action,
+    .btn-logout {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+}
