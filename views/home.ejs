@@ -27,9 +27,9 @@
 
         <!-- Leaderboard Button -->
         <div class="col-6 col-md-auto">
-            <button class="btn btn-success w-100">
+            <a href="/leaderboard" class="btn btn-success w-100">
                 <i class="fas fa-trophy me-2"></i> Leaderboard
-            </button>
+            </a>
         </div>
 
     </div>
@@ -43,38 +43,45 @@
         <% alumni.forEach(user => { %>
             <div class="col-12">
                 <div class="card shadow-sm h-100">
-                    <div class="row g-0 align-items-center">
+                    <a href="connect/<%=user.username%>" style="text-decoration: none">
+                        <div style="cursor: pointer" class="row g-0 align-items-center">
 
-                        <!-- Image Column -->
-                        <div class="col-md-3 text-center p-3">
-                            <img src="<%= user.image || '/default-profile.png' %>" class="rounded-circle img-fluid" style="width: 120px; height: 120px; object-fit: cover;" alt="Profile">
-                        </div>
-
-                        <!-- Info Column -->
-                        <div class="col-md-9">
-                            <div class="card-body">
-                                <h5 class="card-title mb-1"><%= user.name %> <%= user.lastname %></h5>
-                                <p class="text-muted mb-2">
-                                    <%= user.work?.[0]?.role || 'No current role listed' %>
-                                </p>
-
-                                <% if (user.work && user.work.length > 0) { %>
-                                    <ul class="list-group list-group-flush">
-                                        <% user.work.forEach((job, i) => { %>
-                                            <li class="list-group-item px-0">
-                                                <strong><%= job.role %></strong> at <%= job.company %><br>
-                                                <small class="text-muted"><%= job.years %></small><br>
-                                                <em><%= job.description %></em>
-                                            </li>
-                                        <% }); %>
-                                    </ul>
-                                <% } else { %>
-                                    <p class="text-muted">No work history available.</p>
-                                <% } %>
+                            <!-- Image Column -->
+                            <div class="col-md-3 text-center p-3">
+                                     <span class="badge bg-success text-dark d-inline-flex align-items-center px-3 py-2 fs-6 rounded-pill shadow-sm">
+                            <i class="bi bi-fire text-danger me-2"></i>
+                            <strong><%= user.points || 0 %> Points</strong>
+                            </span>
+                                <br><br>
+                                <img src="<%= user.image || '/default-profile.png' %>" class="rounded-circle img-fluid" style="width: 120px; height: 120px; object-fit: cover;" alt="Profile">
                             </div>
-                        </div>
 
-                    </div>
+                            <!-- Info Column -->
+                            <div class="col-md-9">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-1"><%= user.name %> <%= user.lastname %></h5>
+                                    <p class="text-muted mb-2">
+                                        <%= user.work?.[0]?.role || 'No current role listed' %>
+                                    </p>
+
+                                    <% if (user.work && user.work.length > 0) { %>
+                                        <ul class="list-group list-group-flush">
+                                            <% user.work.forEach((job, i) => { %>
+                                                <li class="list-group-item px-0">
+                                                    <strong><%= job.role %></strong> at <%= job.company %><br>
+                                                    <small class="text-muted"><%= job.years %></small><br>
+                                                    <em><%= job.description %></em>
+                                                </li>
+                                            <% }); %>
+                                        </ul>
+                                    <% } else { %>
+                                        <p class="text-muted">No work history available.</p>
+                                    <% } %>
+                                </div>
+                            </div>
+
+                        </div>
+                    </a>
                 </div>
             </div>
         <% }); %>

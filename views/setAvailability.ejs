@@ -1,17 +1,18 @@
 <!-- views/setAvailability.ejs -->
 <!DOCTYPE html>
 <html lang="en">
+<%- include('templates/header',{css:[]}) %>
 <head>
     <meta charset="UTF-8">
     <title>Set Your Availability</title>
-    <link rel="stylesheet" href="/styles/calendar.css">
+    <link rel="stylesheet" href="/css/calendar.css">
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const availabilityForm = document.getElementById('availabilityForm');
-            const output = document.getElementById('output');
+
             const userData = <%- JSON.stringify(userData) %>;
 
-            const initialAvailability = userData.availability || {
+            const initialAvailability = JSON.parse(JSON.stringify(userData.availability)) || {
                 monday:    [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
                 tuesday:   [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
                 wednesday: [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
@@ -26,7 +27,7 @@
             for (const [day, ranges] of Object.entries(initialAvailability)) {
                 const container = document.querySelector(`.time-ranges[data-day="${day}"]`);
                 if (!container) continue;
-
+                container.innerHTML ="";
                 ranges.forEach(range => {
                     const div = document.createElement('div');
                     div.innerHTML = `
@@ -60,8 +61,10 @@
                         }
                     }
 
-                    if (ranges.length) {
+                    if (ranges.length > 0) {
                         availability[day] = ranges;
+                    }else{
+                        availability[day] =  [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }];
                     }
                 });
 
@@ -94,7 +97,9 @@
 
         <% ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].forEach(day => { %>
             <div class="day-block">
+                <hr><br>
                 <label><%= day.charAt(0).toUpperCase() + day.slice(1) %></label>
+                <br><br>
                 <div class="time-ranges" data-day="<%= day %>">
                     <div>
                         <input type="time" class="start-time"> to
@@ -108,7 +113,9 @@
         <br>
         <button type="submit">Save Availability</button>
     </form>
-    <pre id="output"></pre>
+
 </div>
+<%- include('templates/footer', {currentPage:'home'}) %>
+
 </body>
 </html>

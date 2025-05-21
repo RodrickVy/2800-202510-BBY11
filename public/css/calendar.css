@@ -1,0 +1,69 @@
+body{
+    overflow-y:  scroll;
+}
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 2rem 1rem;
+}
+
+.day-block {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #f9f9f9;
+}
+
+.day-block label {
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.time-ranges div {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.time-ranges input[type="time"] {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.time-ranges button {
+    background-color: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #dc3545;
+}
+
+button[type="submit"] {
+    margin-top: 1.5rem;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+}
+
+button[type="button"] {
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #e7f1ff;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+pre#output {
+    margin-top: 2rem;
+    background-color: #f1f1f1;
+    padding: 1rem;
+    border-radius: 6px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 0.9rem;
+}

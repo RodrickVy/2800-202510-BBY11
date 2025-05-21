@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('templates/header',{css:[]}) %>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meetings</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container py-5">
+    <h2 class="mb-4">Your Meetings</h2>
+
+    <ul class="nav nav-tabs" id="meetingTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="outgoing-tab" data-bs-toggle="tab" data-bs-target="#outgoing" type="button" role="tab">Outgoing Requests</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="incoming-tab" data-bs-toggle="tab" data-bs-target="#incoming" type="button" role="tab">Incoming Requests</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="scheduled-tab" data-bs-toggle="tab" data-bs-target="#scheduled" type="button" role="tab">Scheduled Meetings</button>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3">
+        <!-- Outgoing -->
+        <div class="tab-pane fade show active" id="outgoing" role="tabpanel">
+            <% if (outgoing.length > 0) { %>
+                <% outgoing.forEach(m => { %>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <span class="badge bg-secondary">Status: <%= m.accepted ? 'Accepted' : 'Pending' %></span>
+                            <br><br>
+                            <a href="connect/<%=m.targetProfile.username%>"  style="text-decoration: none">
+                                <div class="d-flex align-items-center gap-3 p-2 border rounded shadow-sm bg-light" style="max-width: 400px;">
+                                    <img src="/<%=  m.targetProfile.image || '/default-profile.png' %>" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                    <div class="text-truncate">
+                                        <div class="fw-semibold text-dark mb-0"><%=  m.targetProfile.name %> <%=  m.targetProfile.lastname %></div>
+                                        <small class="text-muted"><%=  m.targetProfile.work?.[0]?.role || 'No role listed' %></small>
+                                    </div>
+                                </div>
+                            </a>
+                            <p class="p-2"> <strong><%= m.duration %> mins</strong> on <%= m.day %> @ <strong><%= m.startTime %></strong> </p>
+
+                            <p class="pl-2">
+                                Meeting <strong><%= m.meetingType %></strong>
+                                <% if (m.meetingType === 'virtual') { %>
+                                    - <a href="<%= m.location %>" target="_blank" class="ms-2 text-decoration-underline">
+                                        Join Link
+                                    </a>
+                                <% } else if (m.meetingType === 'inperson') { %>
+                                    - <span class="badge bg-info text-dark ms-2"><%= m.location %></span>
+                                <% } %>
+                            </p>
+
+                            <p class="pl-2"><%= m.notes %></p>
+
+                            <a href="/connect/meetings/cancel?client=<%= m.client %>&target=<%= m.targetId %>&startTime=<%= m.startTime %>" class="btn btn-primary btn-danger"> Cancel Request</a>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p class="text-muted">You have not sent any meeting requests.</p>
+            <% } %>
+        </div>
+
+        <!-- Incoming -->
+        <div class="tab-pane fade" id="incoming" role="tabpanel">
+            <% if (incoming.length > 0) { %>
+                <% incoming.forEach(m => { %>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <span class="badge bg-secondary">Status: <%= m.accepted ? 'Accepted' : 'Pending' %></span>
+                            <br><br>
+                            <a href="connect/<%=m.clientProfile.username%>"  style="text-decoration: none">
+                                <div class="d-flex align-items-center gap-3 p-2 border rounded shadow-sm bg-light" style="max-width: 400px;">
+                                    <img src="/<%=  m.clientProfile.image || '/default-profile.png' %>" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                    <div class="text-truncate">
+                                        <div class="fw-semibold text-dark mb-0"><%=  m.clientProfile.name %> <%=  m.clientProfile.lastname %></div>
+                                        <small class="text-muted"><%=  m.clientProfile.user_type || 'No role listed' %></small>
+                                    </div>
+                                </div>
+                            </a>
+                            <p class="p-2"> <strong><%= m.duration %> mins</strong> on <%= m.day %> @ <strong><%= m.startTime %></strong> </p>
+
+                            <p class="pl-2">
+                                Meeting <strong><%= m.meetingType %></strong>
+                                <% if (m.meetingType === 'virtual') { %>
+                                    - <a href="<%= m.location %>" target="_blank" class="ms-2 text-decoration-underline">
+                                        Join Link
+                                    </a>
+                                <% } else if (m.meetingType === 'inperson') { %>
+                                    - <span class="badge bg-info text-dark ms-2"><%= m.location %></span>
+                                <% } %>
+                            </p>
+
+                            <p class="pl-2"><%= m.notes %></p>
+
+                            <div class="d-flex gap-2">
+                                <a href="/connect/meetings/accept?client=<%= m.client %>&target=<%= m.targetId %>&startTime=<%= m.startTime %>" class="btn btn-success btn-sm">Accept</a>
+                                <a href="/connect/meetings/reject?client=<%= m.client %>&target=<%= m.targetId %>&startTime=<%= m.startTime %>" class="btn btn-danger btn-sm">Reject</a>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p class="text-muted">You have no incoming meeting requests.</p>
+            <% } %>
+        </div>
+
+        <!-- Scheduled -->
+        <div class="tab-pane fade" id="scheduled" role="tabpanel">
+            <% if (scheduled.length > 0) { %>
+                <% scheduled.forEach(m => { %>
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <span class="badge bg-success">Scheduled</span>
+                            <br><br>
+                            <a href="connect/<%= m.otherParty.username %>" style="text-decoration: none">
+                                <div class="d-flex align-items-center gap-3 p-2 border rounded shadow-sm bg-light" style="max-width: 400px;">
+                                    <img src="/<%= m.otherParty.image || '/default-profile.png' %>" alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                                    <div class="text-truncate">
+                                        <div class="fw-semibold text-dark mb-0"><%= m.otherParty.name %> <%= m.otherParty.lastname %></div>
+                                        <small class="text-muted"><%= m.otherParty.user_type || 'No role listed' %></small>
+                                    </div>
+                                </div>
+                            </a>
+                            <p class="p-2"> <strong><%= m.duration %> mins</strong> on <%= m.day %> @ <strong><%= m.startTime %></strong> </p>
+
+                            <p class="pl-2">
+                                Meeting <strong><%= m.meetingType %></strong>
+                                <% if (m.meetingType === 'virtual') { %>
+                                    - <a href="<%= m.location %>" target="_blank" class="ms-2 text-decoration-underline">
+                                        Join Link
+                                    </a>
+                                <% } else if (m.meetingType === 'inperson') { %>
+                                    - <span class="badge bg-info text-dark ms-2"><%= m.location %></span>
+                                <% } %>
+                            </p>
+
+                            <p class="pl-2"><%= m.notes %></p>
+
+                            <a href="/connect/meetings/cancel?client=<%= m.client %>&target=<%= m.targetId %>&startTime=<%= m.startTime %>" class="btn btn-outline-danger btn-sm">Cancel Meeting</a>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p class="text-muted">No accepted meetings scheduled.</p>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+<br>
+<%- include('templates/footer', {currentPage:'home'}) %>

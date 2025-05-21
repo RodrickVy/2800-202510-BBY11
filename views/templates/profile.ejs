@@ -5,17 +5,19 @@
         <div class="container mb-4">
             <div class="card shadow-sm">
                 <div class="card-body text-center">
-                    <img src="<%= userData.image || '/default-profile.png' %>" alt="Profile Image" class="rounded-circle mb-3" width="150" height="150">
+                    <img src="/<%= userData.image || 'default-profile.png' %>" alt="Profile Image" class="rounded-circle mb-3" width="150" height="150">
                     <h4><%= userData.name %> <%= userData.lastname %></h4>
                     <p class="text-secondary mb-1">
                         <%= userData.work && userData.work[0]?.role ? userData.work[0].role : 'No role listed' %>
                     </p>
+                    <span class="badge bg-warning text-dark d-inline-flex align-items-center px-3 py-2 fs-6 rounded-pill shadow-sm">
+  <i class="bi bi-fire text-danger me-2"></i>
+  <strong><%= userData.points || 0 %> Points</strong>
+</span>
                     <p class="text-muted">
                         <%= userData.bio || 'No bio provided.' %>
                     </p>
-                    <a href="/create-profile" class="btn btn-primary" style="background-color:#013C70" id="meet-btn">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>
+
                 </div>
             </div>
         </div>
@@ -66,31 +68,30 @@
             </div>
         </div>
 
-    <div class="container mb-4">
+    <div class="container  ">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="mb-0">Weekly Availability</h5>
-            <a href="/set-availability" class="btn btn-sm btn-outline-primary">Edit</a>
+
         </div>
-        <%=userData.availability%>
 
             <div class="card">
                 <div class="card-body">
-                    <% if (userData.availability && Object.keys(userData.availability).length > 0) { %>
+                    <% if (userData.availability && Object.keys(JSON.parse(JSON.stringify(userData.availability)) ).length > 0) { %>
                         <table class="table table-sm mb-0">
                             <tbody>
-                            <%
-                                const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                            <% const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
                             days.forEach(day => {
                                 const rawRanges = userData.availability[day];
+
                                 const ranges = Array.isArray(rawRanges) ? rawRanges : [];
                                 const displayDay = day.charAt(0).toUpperCase() + day.slice(1);
                                 const displayRanges = ranges.length > 0
-                                        ? ranges.map(r => `${r.start}–${r.end}`).join(', ')
+                                        ? ranges.map(r => `${r.start}–${r.end}`).join('   |   ')
                                         : 'No availability';
                             %>
                             <tr>
                                 <td class="fw-semibold"><%= displayDay %></td>
-                                <td class="text-muted"><%= displayRanges %></td>
+                                <td class="text-muted"><span class='badge rounded-pill bg-primary'><%= displayRanges %></span></td>
                             </tr>
                             <% }) %>
                             </tbody>
@@ -104,37 +105,39 @@
 
     </div>
 
+<div class="container  ">
+    <% if (userData.media && userData.media.length > 0) { %>
+        <div class="">
+            <h5 class="mb-3">Social Links</h5>
+            <div class="row  ">
 
-<% if (userData.media && userData.media.length > 0) { %>
-            <div class="mt-5">
-                <h5 class="mb-3">Social Links</h5>
-                <div class="row g-3">
-
-                    <% userData.media.forEach((social, index) => { %>
-                        <% if (social.site && social.url) { %>
-                            <div class="col-12 col-md-6">
-                                <div class="card h-100">
-                                    <div class="card-body">
-                                        <h6 class="card-title mb-1"><%= social.site %></h6>
-                                        <a href="<%= social.url %>" target="_blank" class="text-primary text-decoration-underline">
-                                            <%= social.url %>
-                                        </a>
-                                    </div>
+                <% userData.media.forEach((social, index) => { %>
+                    <% if (social.site && social.url) { %>
+                        <div class="col-12 col-md-6">
+                            <div class="card ">
+                                <div class="card-body">
+                                    <h6 class="card-title mb-1"><%= social.site %></h6>
+                                    <a href="<%= social.url %>" target="_blank" class="text-primary text-decoration-underline">
+                                        <%= social.url %>
+                                    </a>
                                 </div>
                             </div>
-                            <% } else { %>
-                                <p class="text-muted mt-4">Invalid link provided</p>
-                            <% } %>
-                    <% }); %>
+                        </div>
+                    <% } else { %>
+                        <p class="text-muted  ">Invalid link provided</p>
+                    <% } %>
+                <% }); %>
 
-                </div>
             </div>
-        <% } else { %>
-            <p class="text-muted mt-4">No social links added.</p>
-        <% } %>
+        </div>
+    <% } else { %>
+        <p class="text-muted mt-4">No social links added.</p>
+    <% } %>
+
+
 
     <% if ((userData.skills && userData.skills.length > 0) || (userData.interests && userData.interests.length > 0)) { %>
-        <div class="mt-5">
+        <div class=" ">
             <% if (userData.skills && userData.skills.length > 0) { %>
                 <h5 class="mb-2">Skills</h5>
                 <div class="mb-3">

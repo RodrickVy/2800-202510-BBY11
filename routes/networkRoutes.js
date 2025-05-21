@@ -35,6 +35,20 @@ async function getAlumniList(userCollection) {
         return [];
     }
 }
+async function getTopUsersByPoints(limit = 10,userCollection) {
+    try {
+        const users = await userCollection
+            .find({})
+            .sort({ points: -1 }) // -1 = descending
+            .limit(limit)
+            .toArray();
+
+        return users;
+    } catch (err) {
+        console.error('Error fetching users by points:', err);
+        return [];
+    }
+}
 
 async function matchAlumni(userCollection, currentUserProfile) {
     const alumni = await userCollection.find({ user_type: "alumni" }).toArray();
@@ -205,6 +219,17 @@ const networkRoutes = (userCollection) => {
         const currentUserProfile = req.session.userProfile;
         if(req.session.authenticated){
             const matchedAlumni = await matchAlumni(userCollection, currentUserProfile);
+            res.render("home", { alumni:matchedAlumni });
+        }else{
+            res.redirect("/login");
+        }
+
+    });
+
+    router.get("/leaderboard", async (req, res) => {
+        const currentUserProfile = req.session.userProfile;
+        if(req.session.authenticated){
+            const matchedAlumni = await getTopUsersByPoints(10,userCollection);
             res.render("home", { alumni:matchedAlumni });
         }else{
             res.redirect("/login");
