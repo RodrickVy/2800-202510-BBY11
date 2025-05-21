@@ -2,7 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 
-const { OpenAI } = require("openai");
+const {OpenAI} = require("openai");
 
 // OpenAI setup (use your own API key via env or config)
 const openai = new OpenAI({
@@ -138,7 +138,7 @@ const careerQuiz = {
 
 const careerRoutes = (userCollection) => {
     router.get("/career_quiz", (req, res) => {
-        res.render("careerQuiz", { error: null, title: " Career Quiz", ...careerQuiz });
+        res.render("careerQuiz", {error: null, title: " Career Quiz", ...careerQuiz});
     });
 
     // POST route to handle form submission
@@ -147,21 +147,22 @@ const careerRoutes = (userCollection) => {
         console.log(quizAnswers)
 
         const result = await userCollection
-            .find({ username: req.session.username })
+            .find({username: req.session.username})
             .project({
                 username: 1,
-                name:1,
-                lastname:1,
+                name: 1,
+                lastname: 1,
                 password: 1,
                 user_type: 1,
                 education: 1,
-                points:1,
+                points: 1,
                 work: 1,
                 skills: 1,
-                interests:1,
+                interests: 1,
                 bio: 1,
                 image: 1,
-                media: 1
+                media: 1,
+                availability:1
             })
             .toArray();
 
@@ -173,7 +174,6 @@ const careerRoutes = (userCollection) => {
         const userProfile = {
             ...result[0]
         };
-
 
 
         const prompt = `
@@ -226,10 +226,10 @@ const careerRoutes = (userCollection) => {
 
             const completion = await openai.chat.completions.create({
                 model: "gpt-3.5-turbo",
-                messages: [{ role: "user", content: prompt }],
+                messages: [{role: "user", content: prompt}],
                 temperature: 0.7,
             });
-            console.log(JSON.stringify( completion.choices[0].message))
+            console.log(JSON.stringify(completion.choices[0].message))
             const gptResponse = completion.choices[0].message.content;
             console.log(gptResponse);
             res.render("careerQuizResults", {
@@ -238,11 +238,11 @@ const careerRoutes = (userCollection) => {
             });
 
         } catch (err) {
-            console.error("Error calling OpenAI:", err);
-        res.render('error', {
+
+            res.render('error', {
                 error: "something went wrong while generating your report",
                 redirectLink: "/career_quiz",
-                redirectLinkCTA  : "Try Quiz Again",
+                redirectLinkCTA: "Try Quiz Again",
                 currentPage: 'careers'
             });
         }
@@ -269,7 +269,7 @@ const careerRoutes = (userCollection) => {
             res.status(500).render('error', {
                 error: "Failed to load career data",
                 redirectLink: "/",
-                redirectLinkCTA  : "Report & go Home",
+                redirectLinkCTA: "Report & go Home",
                 currentPage: 'careers'
             });
         }
@@ -296,7 +296,7 @@ const careerRoutes = (userCollection) => {
             res.status(500).render('error', {
                 error: "Failed to load career data",
                 redirectLink: "/",
-                redirectLinkCTA  : "Report & go Home",
+                redirectLinkCTA: "Report & go Home",
                 currentPage: 'careers'
             });
         }
@@ -305,7 +305,9 @@ const careerRoutes = (userCollection) => {
     return router;
 };
 
-module.exports = { careerRoutes };
+
+
+module.exports = {careerRoutes};
 
 
 

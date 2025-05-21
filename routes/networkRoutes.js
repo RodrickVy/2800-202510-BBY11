@@ -26,7 +26,8 @@ async function getAlumniList(userCollection) {
                 skills: 1,
                 bio: 1,
                 image: 1,
-                media: 1
+                media: 1,
+                availability:1
             })
             .toArray();
     } catch (err) {
@@ -156,7 +157,8 @@ async function searchProfiles(userCollection, query) {
         user_type: 1,
         interests: 1,
         education: 1,
-        work: 1
+        work: 1,
+        availability:1
     }).toArray();
 }
 
@@ -173,7 +175,8 @@ async function rankUsersByPoints(userCollection, limit = 10) {
                 username: 1,
                 image: 1,
                 points: 1,
-                user_type: 1
+                user_type: 1,
+                availability:1
             })
             .toArray();
 

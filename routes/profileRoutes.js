@@ -5,17 +5,17 @@ const path = require('path');
 
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "public/userProfiles");
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname); // get .jpg, .png, etc.
-    cb(null, uniqueSuffix + ext); // final file name: 169000-somerandom.jpg
-  },
+    destination: function (req, file, cb) {
+        cb(null, "public/userProfiles");
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+        const ext = path.extname(file.originalname); // get .jpg, .png, etc.
+        cb(null, uniqueSuffix + ext); // final file name: 169000-somerandom.jpg
+    },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({storage: storage});
 
 // destructing, only using the ObjectId from mongoDB
 const {ObjectId} = require('mongodb');
@@ -32,24 +32,25 @@ function isAuthenticated(req, res, next) {
 const profileRoutes = (userCollection) => {
 
     router.get("/account", async (req, res) => {
-        if(req.session.authenticated) {
+        if (req.session.authenticated) {
 
             const result = await userCollection
-                .find({ username: req.session.username })
+                .find({username: req.session.username})
                 .project({
                     username: 1,
-                    name:1,
-                    lastname:1,
+                    name: 1,
+                    lastname: 1,
                     password: 1,
                     user_type: 1,
                     education: 1,
-                    points:1,
+                    points: 1,
                     work: 1,
                     skills: 1,
-                    interests:1,
+                    interests: 1,
                     bio: 1,
                     image: 1,
-                    media: 1
+                    media: 1,
+                    availability:1
                 })
                 .toArray();
 
@@ -59,13 +60,12 @@ const profileRoutes = (userCollection) => {
             }
 
 
-
-            req.session.userProfile  = {
+            req.session.userProfile = {
                 ...result[0]
             };
             console.log(req.session.userProfile)
-            res.render("account",{userData: req.session.userProfile});
-        }else{
+            res.render("account", {userData: req.session.userProfile});
+        } else {
             res.redirect("/login");
         }
 
@@ -74,7 +74,7 @@ const profileRoutes = (userCollection) => {
     router.post('/submitProfile', upload.single('profileImage'), async (req, res) => {
         try {
             const defaultImagePath = "userProfiles/default.png"; // this should exist in your /public/userProfiles folder
-            console.log("Bio"+req.body.bio);
+            console.log("Bio" + req.body.bio);
             const updates = {
                 name: req.body.firstname,
                 lastname: req.body.lastname,
@@ -91,8 +91,8 @@ const profileRoutes = (userCollection) => {
             };
 
             await userCollection.updateOne(
-                { _id: new ObjectId(req.session.user_id) },
-                { $set: updates }
+                {_id: new ObjectId(req.session.user_id)},
+                {$set: updates}
             );
 
             res.redirect("/account");
@@ -103,16 +103,56 @@ const profileRoutes = (userCollection) => {
     });
 
 
-
     router.get("/create-profile", isAuthenticated, async (req, res) => {
-       console.log("Some data" +req.session.userProfile)
+        console.log("Some data" + req.session.userProfile)
 
-        res.render("createProfile", {userData:  req.session.userProfile});
+        res.render("createProfile", {userData: req.session.userProfile});
+    });
+
+    router.get('/set-availability', (req, res) => {
+        res.render('setAvailability',{userData: req.session.userProfile});
     });
 
 
+// POST route to save availability
+    router.post('/saveAvailability', async (req, res) => {
+        const availability = req.body.availability;
+        const username = req.session.username;
+
+
+        console.log(availability)
+        console.log("data out")
+        if (!req.session.authenticated) {
+             res.redirect("/login")
+            return;
+        }
+
+        try {
+
+
+            const result = await userCollection.updateOne(
+                { username: username },
+                { $set: { availability: availability } }
+            );
+
+            if (result.modifiedCount === 0) {
+                res.render('error', {
+                    error: "sorry something went wrong",
+                    redirectLink: "/account",
+                    redirectLinkCTA: "Try Again",
+                    currentPage: 'account'
+                });
+                return;
+            }
+
+            res.redirect("/profile");
+        } catch (err) {
+            console.error('Error saving availability:', err);
+            res.status(500).json({ error: 'Internal server error.' });
+        }
+    });
 
     return router;
 }
 
-module.exports = { profileRoutes };
+module.exports = {profileRoutes};
