@@ -27,6 +27,7 @@ var { database } = include("databaseConnection");
 
 const userCollection = database.db(mongodb_database).collection("users");
 const meetingsCollection = database.db(mongodb_database).collection("meetings");
+const notificationsCollection= database.db(mongodb_database).collection("notifications");
 // MongoDB connection
 var mongoStore = MongoStore.create({
   mongoUrl: process.env.MONGODB_HOST,
@@ -52,7 +53,7 @@ app.use(
 // mount to the home page
 app.use("/", authRoutes(userCollection));
 app.use("/", careerRoutes(userCollection));
-app.use("/", profileRoutes(userCollection,meetingsCollection));
+app.use("/", profileRoutes(userCollection,meetingsCollection,notificationsCollection));
 app.use("/", networkRoutes(userCollection));
 
 

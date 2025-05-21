@@ -84,24 +84,206 @@ async function getAllUsers(userCollection) {
         return [];
     }
 }
-async function addPoints(username, points,userCollection) {
+async function addPoints(username, points,userCollection,notificationsCollection) {
     try {
+
+
+
+
+
+
         const updateResult = await userCollection.updateOne(
             { username: username },
             { $inc: { points: parseInt(points) } }
         );
 
-        if (updateResult.matchedCount === 0) {
-            return res.status(404).send('User not found');
-        }
-        console.log("points added "+ updateResult)
+        const result = await userCollection
+            .find({username: username})
+            .project({
+                username: 1,
+                name: 1,
+                lastname: 1,
+                password: 1,
+                user_type: 1,
+                education: 1,
+                points: 1,
+                work: 1,
+                skills: 1,
+                interests: 1,
+                bio: 1,
+                image: 1,
+                media: 1,
+                availability:1
+            })
+            .toArray();
+
+        const userData = {
+            ...result[0]
+        };
+
+        await createNotification({
+            notificationsCollection,
+            title: 'Keep Leveling Up!',
+            message: `You have ${points} points added! Check your profile.`,
+            directTo: '/account',
+            targetId: userData._id
+        });
+
 
     } catch (err) {
         console.error('Error updating points:', err);
 
     }
 }
-const profileRoutes = (userCollection,meetingsCollection) => {
+
+async function getMeetingProfiles(meeting, usersCollection) {
+    if (!meeting || !usersCollection || !meeting.targetId || !meeting.client) {
+        throw new Error('Missing required data for fetching meeting profiles.');
+    }
+
+    const [targetProfile, clientProfile] = await Promise.all([
+        usersCollection.findOne({ _id: new ObjectId(meeting.targetId) }),
+        usersCollection.findOne({ username: meeting.client })
+    ]);
+
+    return {
+        targetProfile,
+        clientProfile
+    };
+}
+
+async function loadMeetings(meetingsCollection, userCollection,req,res) {
+    const username = req.session?.username;
+    const userId = req.session?.userProfile?._id;
+
+    if (!username || !userId) return res.redirect('/login');
+
+    const alumni = await getAlumniList(userCollection);
+    const allUsers = await getAllUsers(userCollection);
+    const outgoing = await meetingsCollection.find({ client: username }).project({
+        client:1,
+        targetId:1,
+        accepted:1,
+        day:1,
+        startTime:1,
+        duration:1,
+        notes:1,
+
+        location:1,
+        meetingType:1,
+        createdAt:1
+    })
+        .toArray();
+    const incoming = await meetingsCollection.find({ targetId: new ObjectId(userId) }).project({
+        client:1,
+        targetId:1,
+        accepted:1,
+        day:1,
+        startTime:1,
+        duration:1,
+        notes:1,
+        createdAt:1
+    }).toArray();
+
+
+    const incomingMeetingsRequest = incoming.filter((e)=>e.accepted ===false).map(function (e) {
+        const targetProfile = alumni.find((a) => {
+
+            return  a._id.equals( e.targetId );
+        })
+        const clientProfile = allUsers.find(function (a) {
+            console.log(a.username +"==="+ e.client);
+            return a.username === e.client;
+        });
+        return {
+            ...e,
+            targetProfile:targetProfile,
+            clientProfile:clientProfile,
+            otherParty:clientProfile
+        };
+
+    });
+    const scheduledMeetings = [...incoming,...outgoing].filter((meeting)=>meeting.accepted ===true).map(function (meeting) {
+        let profile = {};
+
+        if(userId === meeting.targetId ){
+            profile = allUsers.find(function (user) {
+                return user.username === meeting.client;
+            });
+        }else{
+            profile = alumni.find((user) => {
+
+                return  user._id.equals( meeting.targetId );
+            })
+        }
+
+
+        return {
+            ...meeting,
+            otherParty:profile
+        };
+
+    });
+    const outgoingMeetingRequest = outgoing.filter((e)=>e.accepted ===false).map(function (e) {
+        const targetProfile = alumni.find((a) => {
+
+            return  a._id.equals( e.targetId );
+        })
+        const clientProfile = allUsers.find(function (a) {
+            console.log(a.username +"==="+ e.client);
+            return a.username === e.client;
+        });
+        return {
+            ...e,
+            targetProfile:targetProfile,
+            clientProfile:clientProfile,
+            otherParty:targetProfile
+        };
+
+    })
+    console.log(JSON.stringify(incomingMeetingsRequest));
+    return {
+        outgoing: outgoingMeetingRequest,
+        incoming: incomingMeetingsRequest,
+        alumni: await getAlumniList(userCollection),
+        scheduled: scheduledMeetings,
+    };
+}
+
+async function createNotification({
+                                      notificationsCollection,
+                                      title,
+                                      message,
+                                      directTo,
+                                      targetId, // MongoDB ObjectId
+                                      readStatus = false,
+                                      dateSent = new Date(),
+
+                                  }) {
+    if (!notificationsCollection || !title || !message || !directTo || !targetId) {
+        throw new Error('Missing required parameters to create notification.');
+    }
+
+    const notification = {
+        title,
+        message,
+        directTo,
+        targetId,
+        readStatus,
+        dateSent
+    };
+
+    try {
+        const result = await notificationsCollection.insertOne(notification);
+        return result.insertedId;
+    } catch (err) {
+        console.error('Failed to create notification:', err);
+        throw err;
+    }
+}
+
+
+const profileRoutes = (userCollection,meetingsCollection,notificationsCollection) => {
 
     router.get("/account", async (req, res) => {
         if (req.session.authenticated) {
@@ -171,7 +353,7 @@ const profileRoutes = (userCollection,meetingsCollection) => {
                 {_id: new ObjectId(req.session.user_id)},
                 {$set: updates}
             );
-            await addPoints(req.session.username, 150,userCollection);
+            await addPoints(req.session.username, 150,userCollection,notificationsCollection);
             res.redirect("/account");
         } catch (error) {
             console.error("Profile submission failed:", error);
@@ -179,27 +361,31 @@ const profileRoutes = (userCollection,meetingsCollection) => {
         }
     });
 
-    router.get("/notifications", async (req, res) => {
-        const notifications = [
-        {
-        title: "New Message",
-        message: "You received a new message from Alex.",
-        date: "2025-05-19 12:45 PM",
-        read: false
-        },
-        {
-        title: "Event Reminder",
-        message: "Don't forget your meeting at 3 PM.",
-        date: "2025-05-18 10:00 AM",
-        read: true
-        }
-    ];
 
-        res.render("notifications", {
-        notifications,
-        currentPage: "notifications"  // 👈 Add this!
+// GET /notifications
+    router.get('/notifications', async (req, res) => {
+        const userId = req.session?.userProfile?._id;
+
+        if (!userId) {
+            return res.redirect('/login');
+        }
+
+        try {
+
+            const notifications = await notificationsCollection
+                .find({ targetId: new ObjectId(userId) })
+                .sort({ dateSent: -1 }) // most recent first
+                .toArray();
+
+            res.render('notifications', { notifications });
+        } catch (err) {
+            console.error('Error loading notifications:', err);
+            res.status(500).send('Unable to load notifications.');
+        }
     });
-    });
+
+    module.exports = router;
+
 
     router.get("/create-profile", isAuthenticated, async (req, res) => {
         console.log("Some data" + req.session.userProfile)
@@ -241,17 +427,13 @@ const profileRoutes = (userCollection,meetingsCollection) => {
                 });
                 return;
             }
-            await addPoints(req.session.username, 150,userCollection);
+            await addPoints(req.session.username, 150,userCollection,notificationsCollection);
             res.redirect("/account");
         } catch (err) {
             console.error('Error saving availability:', err);
             res.status(500).json({ error: 'Internal server error.' });
         }
     });
-
-
-
-
 
     router.post('/schedule-meeting', async (req, res) => {
         const { targetUserId, day, startTime, duration, notes,location, meetingType } = req.body;
@@ -282,8 +464,23 @@ const profileRoutes = (userCollection,meetingsCollection) => {
 
 
 
+            const meetingProfiles = await getMeetingProfiles(meeting,userCollection);
+            let profileToNotify = {};
+
+
+            await createNotification({
+                notificationsCollection,
+                title: '@' + req.session.userProfile.name +' wants to connect!',
+                message: '@' + req.session.userProfile.name  + " would like to connect on "+ meeting.day + " at "+ meeting.startTime,
+                directTo: '/connect/meetings',
+                targetId: meetingProfiles.targetProfile._id
+            });
+            await addPoints(req.session.username, 300,userCollection,notificationsCollection);
+
+
             await meetingsCollection.insertOne(meeting);
-            await addPoints(req.session.username, 100,userCollection);
+
+
             res.redirect(`/connect/meetings`);
         } catch (err) {
             console.error('Error scheduling meeting:', err);
@@ -292,103 +489,42 @@ const profileRoutes = (userCollection,meetingsCollection) => {
     });
 
     router.get('/connect/meetings', async (req, res) => {
-        const username = req.session?.username;
-        const userId = req.session?.userProfile?._id;
 
-        if (!username || !userId) return res.redirect('/login');
-
-        const alumni = await getAlumniList(userCollection);
-        const allUsers = await getAllUsers(userCollection);
-        const outgoing = await meetingsCollection.find({ client: username }).project({
-            client:1,
-            targetId:1,
-            accepted:1,
-            day:1,
-            startTime:1,
-            duration:1,
-            notes:1,
-
-            location:1,
-            meetingType:1,
-            createdAt:1
-        })
-            .toArray();
-        const incoming = await meetingsCollection.find({ targetId: new ObjectId(userId) }).project({
-            client:1,
-            targetId:1,
-            accepted:1,
-            day:1,
-            startTime:1,
-            duration:1,
-            notes:1,
-            createdAt:1
-        }).toArray();
+        const meetingData = await loadMeetings(meetingsCollection, userCollection,req,res);
+        res.redirect("/connect/meetings/outgoing");
+    });
 
 
-        const incomingMeetingsRequest = incoming.filter((e)=>e.accepted ===false).map(function (e) {
-            const targetProfile = alumni.find((a) => {
+    router.get('/connect/meetings/incoming', async (req, res) => {
 
-                return  a._id.equals( e.targetId );
-            })
-            const clientProfile = allUsers.find(function (a) {
-                console.log(a.username +"==="+ e.client);
-                return a.username === e.client;
-            });
-            return {
-                ...e,
-                targetProfile:targetProfile,
-                clientProfile:clientProfile,
-                otherParty:clientProfile
-            };
+        const meetingData = await loadMeetings(meetingsCollection, userCollection,req,res);
+        res.render('incomingMeetings', {
+                meetings:meetingData.incoming,
+                alumni:meetingData.alumni,
 
-        });
-        const scheduledMeetings = [...incoming,...outgoing].filter((meeting)=>meeting.accepted ===true).map(function (meeting) {
-            let profile = {};
-
-            if(userId === meeting.targetId ){
-                profile = allUsers.find(function (user) {
-                    return user.username === meeting.client;
-                });
-            }else{
-               profile = alumni.find((user) => {
-
-                    return  user._id.equals( meeting.targetId );
-                })
-            }
-
-
-            return {
-                ...meeting,
-                otherParty:profile
-            };
-
-        });
-        const outgoingMeetingRequest = outgoing.filter((e)=>e.accepted ===false).map(function (e) {
-            const targetProfile = alumni.find((a) => {
-
-                    return  a._id.equals( e.targetId );
-                })
-            const clientProfile = allUsers.find(function (a) {
-                console.log(a.username +"==="+ e.client);
-                return a.username === e.client;
-            });
-            return {
-                ...e,
-                targetProfile:targetProfile,
-                clientProfile:clientProfile,
-                otherParty:targetProfile
-            };
-
-        })
-        res.render('meetings', {
-                outgoing: outgoingMeetingRequest,
-                incoming: incomingMeetingsRequest,
-                alumni: await getAlumniList(userCollection),
-                scheduled: scheduledMeetings,
             }
         );
     });
+    router.get('/connect/meetings/outgoing', async (req, res) => {
 
+        const meetingData = await loadMeetings(meetingsCollection, userCollection,req,res);
+        res.render('outgoingMeetings', {
+                meetings:meetingData.outgoing,
+                alumni:meetingData.alumni,
+
+            }
+        );
+    });
+    router.get('/connect/meetings/scheduled', async (req, res) => {
+
+        const meetingData = await loadMeetings(meetingsCollection, userCollection,req,res);
+        res.render('scheduledMeetings', {
+                meetings:meetingData.scheduled,
+                alumni:meetingData.alumni,
+
+            }
+        );
+    });
 
     router.get('/connect/meetings/accept', async (req, res) => {
         const { client, target, startTime } = req.query;
@@ -397,10 +533,39 @@ const profileRoutes = (userCollection,meetingsCollection) => {
             { client, targetId: new ObjectId(target), startTime },
             { $set: { accepted: true } }
         );
-        await addPoints(req.session.username, 300,userCollection);
-        res.redirect('/connect/meetings');
-    });
+       const meeting = ( await meetingsCollection.find(
+            { client, targetId: new ObjectId(target), startTime }
+        ).project({
+           client:1,
+           targetId:1,
+           accepted:1,
+           day:1,
+           startTime:1,
+           duration:1,
+           notes:1,
+           createdAt:1
+       }).toArray())[0];
 
+
+       const meetingProfiles = await getMeetingProfiles(meeting,userCollection);
+       let profileToNotify = {};
+       if(meetingProfiles.targetProfile.username === req.session.username){
+           profileToNotify = meetingProfiles.clientProfile;
+       }else{
+           profileToNotify = meetingProfiles.targetProfile;
+       }
+
+        await createNotification({
+            notificationsCollection,
+            title: 'Your meeting with @' + req.session.userProfile.name +' has been accepted.',
+            message: '@' + req.session.username + " accepted your meeting for "+ meeting.day + " at "+ meeting.startTime,
+            directTo: '/connect/meetings',
+            targetId: profileToNotify._id
+        });
+        await addPoints(req.session.username, 300,userCollection,notificationsCollection);
+
+        res.redirect("/connect/meetings/outgoing");
+    });
 
     router.get('/connect/meetings/reject', async (req, res) => {
         const { client, target, startTime } = req.query;
@@ -410,8 +575,40 @@ const profileRoutes = (userCollection,meetingsCollection) => {
             { $set: { accepted: false } }
         );
 
-        res.redirect('/connect/meetings');
+        const meeting = ( await meetingsCollection.find(
+            { client, targetId: new ObjectId(target), startTime }
+        ).project({
+            client:1,
+            targetId:1,
+            accepted:1,
+            day:1,
+            startTime:1,
+            duration:1,
+            notes:1,
+            createdAt:1
+        }).toArray())[0];
+
+
+        const meetingProfiles = await getMeetingProfiles(meeting,userCollection);
+        let profileToNotify = {};
+        if(meetingProfiles.targetProfile.username === req.session.username){
+            profileToNotify = meetingProfiles.clientProfile;
+        }else{
+            profileToNotify = meetingProfiles.targetProfile;
+        }
+
+        await createNotification({
+            notificationsCollection,
+            title: 'Your meeting with @' + req.session.userProfile.name  +' has been not been able to accept your meeting.',
+            message: '@' + req.session.username + " has been not been able to accept your meeting for"+ meeting.day + " at "+ meeting.startTime,
+            directTo: '/connect/meetings',
+            targetId: profileToNotify._id
+        });
+        await addPoints(req.session.username, -50,userCollection,notificationsCollection);
+
+        res.redirect("/connect/meetings/outgoing");
     });
+
     router.get("/connect/:username", async (req, res) => {
         const username = req.params.username
         console.log(username)
@@ -453,8 +650,6 @@ const profileRoutes = (userCollection,meetingsCollection) => {
         res.render("publicProfile", {userData: userProfile});
     });
 
-    const { ObjectId } = require('mongodb');
-
     router.get('/connect/meetings/cancel', async (req, res) => {
         const { client, target, startTime } = req.query;
 
@@ -463,6 +658,37 @@ const profileRoutes = (userCollection,meetingsCollection) => {
         }
 
         try {
+
+            const meeting = ( await meetingsCollection.find(
+                { client, targetId: new ObjectId(target), startTime }
+            ).project({
+                client:1,
+                targetId:1,
+                accepted:1,
+                day:1,
+                startTime:1,
+                duration:1,
+                notes:1,
+                createdAt:1
+            }).toArray())[0];
+
+
+            const meetingProfiles = await getMeetingProfiles(meeting,userCollection);
+            let profileToNotify = {};
+            if(meetingProfiles.targetProfile.username === req.session.username){
+                profileToNotify = meetingProfiles.clientProfile;
+            }else{
+                profileToNotify = meetingProfiles.targetProfile;
+            }
+
+            await createNotification({
+                notificationsCollection,
+                title: 'Your meeting with @' + req.session.userProfile.name +' has canceled your meeting',
+                message: '@' + req.session.username + " has canceled your meeting for"+ meeting.day + " at "+ meeting.startTime,
+                directTo: '/connect/meetings',
+                targetId: profileToNotify._id
+            });
+            await addPoints(req.session.username, -150,userCollection,notificationsCollection);
             const result = await meetingsCollection.deleteOne({
                 client,
                 targetId: new ObjectId(target),
@@ -474,8 +700,8 @@ const profileRoutes = (userCollection,meetingsCollection) => {
             }
 
 
-            await addPoints(req.session.username, -100,userCollection);
-            res.redirect('/connect/meetings');
+            await addPoints(req.session.username, -100,userCollection,notificationsCollection);
+            res.redirect("/connect/meetings/outgoing");
         } catch (err) {
             console.error('Error cancelling meeting:', err);
             res.status(500).send('Internal server error.');
@@ -499,7 +725,37 @@ const profileRoutes = (userCollection,meetingsCollection) => {
         }
     });
 
+    const { ObjectId } = require('mongodb');
 
+    router.get('/notification/read', async (req, res) => {
+        const { targetId, dateSent, directTo } = req.query;
+        console.log(req.query)
+        if (!targetId || !dateSent || !directTo) {
+            return res.status(400).send('Missing required query parameters.');
+        }
+
+        try {
+
+
+            const result = await notificationsCollection.updateOne(
+                {
+                    targetId: new ObjectId(targetId),
+                    dateSent: new Date(dateSent),
+                    directTo: directTo
+                },
+                {
+                    $set: { readStatus: true }
+                }
+            );
+
+
+
+            res.redirect(directTo); // Redirect to where the notification was pointing
+        } catch (err) {
+            console.error('Error deleting notification:', err);
+            res.status(500).send('Server error while deleting notification.');
+        }
+    });
 
 
     return router;
