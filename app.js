@@ -1,6 +1,6 @@
 require("dotenv").config();
 const express = require("express");
-const port = process.env.PORT || 4300;
+const port = process.env.PORT || 4000;
 const { loadPage, getCareerIcon } = require('./util.js');
 const app = express();
 app.locals.getCareerIcon = getCareerIcon;
@@ -26,7 +26,8 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 var { database } = include("databaseConnection");
 
 const userCollection = database.db(mongodb_database).collection("users");
-
+const meetingsCollection = database.db(mongodb_database).collection("meetings");
+const notificationsCollection= database.db(mongodb_database).collection("notifications");
 // MongoDB connection
 var mongoStore = MongoStore.create({
   mongoUrl: process.env.MONGODB_HOST,
@@ -52,7 +53,7 @@ app.use(
 // mount to the home page
 app.use("/", authRoutes(userCollection));
 app.use("/", careerRoutes(userCollection));
-app.use("/", profileRoutes(userCollection));
+app.use("/", profileRoutes(userCollection,meetingsCollection,notificationsCollection));
 app.use("/", networkRoutes(userCollection));
 
 
