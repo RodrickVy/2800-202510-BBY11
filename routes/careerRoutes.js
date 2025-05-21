@@ -2,7 +2,7 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 
-const {OpenAI} = require("openai");
+const { OpenAI } = require("openai");
 
 // OpenAI setup (use your own API key via env or config)
 const openai = new OpenAI({
@@ -138,10 +138,10 @@ const careerQuiz = {
 const careerRoutes = (userCollection) => {
   router.get("/career_quiz", (req, res) => {
     res.render("careerQuiz", {
-     error: null,
+      error: null,
       title: " Career Quiz",
       ...careerQuiz,
-   });
+    });
   });
 
   // POST route to handle form submission
@@ -150,22 +150,22 @@ const careerRoutes = (userCollection) => {
     console.log(quizAnswers);
 
     const result = await userCollection
-      .find({username: req.session.username})
+      .find({ username: req.session.username })
       .project({
         username: 1,
-        name:  1,
-        lastname:  1,
+        name: 1,
+        lastname: 1,
         password: 1,
         user_type: 1,
         education: 1,
-        points:  1,
+        points: 1,
         work: 1,
         skills: 1,
-        interests:  1,
+        interests: 1,
         bio: 1,
         image: 1,
-        media: 1,,
-                availability:1
+        media: 1,
+        availability: 1,
       })
       .toArray();
 
@@ -223,31 +223,28 @@ const careerRoutes = (userCollection) => {
                 
                 Return the Json list of only careers that strongly align based on the user's answers and background.Make sure the json is parsable and valid`;
 
-        try {
-
-            const completion = await openai.chat.completions.create({
-                model: "gpt-3.5-turbo",
-                messages: [{role: "user", content: prompt}],
-                temperature: 0.7,
-            });
-            console.log(JSON.stringify(completion.choices[0].message))
-            const gptResponse = completion.choices[0].message.content;
-            console.log(gptResponse);
-            res.render("careerQuizResults", {
-                title: "Career Suggestions",
-                careers: JSON.parse(gptResponse),
-            });
-
-        } catch (err) {
-
-            res.render('error', {
-                error: "something went wrong while generating your report",
-                redirectLink: "/career_quiz",
-                redirectLinkCTA: "Try Quiz Again",
-                currentPage: 'careers'
-            });
-        }
-    });
+    try {
+      const completion = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.7,
+      });
+      console.log(JSON.stringify(completion.choices[0].message));
+      const gptResponse = completion.choices[0].message.content;
+      console.log(gptResponse);
+      res.render("careerQuizResults", {
+        title: "Career Suggestions",
+        careers: JSON.parse(gptResponse),
+      });
+    } catch (err) {
+      res.render("error", {
+        error: "something went wrong while generating your report",
+        redirectLink: "/career_quiz",
+        redirectLinkCTA: "Try Quiz Again",
+        currentPage: "careers",
+      });
+    }
+  });
 
   router.get("/careers", (req, res) => {
     try {
@@ -323,6 +320,4 @@ const careerRoutes = (userCollection) => {
   return router;
 };
 
-
-
-module.exports = {careerRoutes};
+module.exports = { careerRoutes };

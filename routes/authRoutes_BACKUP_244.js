@@ -127,10 +127,76 @@ const authRoutes = (userCollection) => {
 
     res.redirect("create-profile");
   });
+  console.log("Inserted user");
 
   router.get("/login", (req, res) => {
     const error = req.query.error;
     res.render("login", { error });
+  });
+
+  router.post("/loggingin", async (req, res) => {
+    const { username, password } = req.body;
+
+    const schema = Joi.string().email().required();
+    const validationResult = schema.validate(username);
+    if (validationResult.error) {
+      return res.redirect("/login?error=invalid");
+    }
+
+    const result = await userCollection
+      .find({ username: username })
+      .project({
+        username: 1,
+        name: 1,
+        lastname: 1,
+        password: 1,
+        points: 1,
+        interests: 1,
+        user_type: 1,
+        education: 1,
+        work: 1,
+        skills: 1,
+        bio: 1,
+        image: 1,
+        media: 1,
+      })
+      .toArray();
+
+    if (result.length !== 1) {
+      return res.redirect("/login?error=invalid");
+    }
+
+    const validPassword = await bcrypt.compare(password, result[0].password);
+    if (!validPassword) {
+      return res.redirect("/login?error=invalid");
+    }
+
+    if (result.length !== 1) {
+      return res.redirect("/login?error=invalid");
+    }
+
+    const userProfile = {
+      ...result[0],
+    };
+    req.session.authenticated = true;
+    req.session.username = username;
+    req.session.userProfile = userProfile;
+    req.session.name = result[0].name;
+    req.session.cookie.maxAge = expireTime;
+    req.session.user_id = result[0]._id;
+
+    res.redirect("/account");
+  });
+
+  router.get("/logout", (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("Session destruction error:", err);
+        return res.redirect("/login?error=logout-failed");
+      }
+      res.clearCookie("connect.sid"); // Optional, good practice
+      res.redirect("/login");
+    });
   });
 
   router.post("/loggingin", async (req, res) => {
