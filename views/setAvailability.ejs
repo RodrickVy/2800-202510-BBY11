@@ -1,0 +1,114 @@
+<!-- views/setAvailability.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Set Your Availability</title>
+    <link rel="stylesheet" href="/styles/calendar.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const availabilityForm = document.getElementById('availabilityForm');
+            const output = document.getElementById('output');
+            const userData = <%- JSON.stringify(userData) %>;
+
+            const initialAvailability = userData.availability || {
+                monday:    [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+                tuesday:   [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+                wednesday: [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+                thursday:  [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+                friday:    [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+                saturday:  [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+                sunday:    [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }]
+            };
+            console.log(JSON.stringify(userData) + " User data");
+
+            // Preload availability from userData.availability
+            for (const [day, ranges] of Object.entries(initialAvailability)) {
+                const container = document.querySelector(`.time-ranges[data-day="${day}"]`);
+                if (!container) continue;
+
+                ranges.forEach(range => {
+                    const div = document.createElement('div');
+                    div.innerHTML = `
+                              <input type="time" class="start-time" value="${range.start}"> to
+                              <input type="time" class="end-time" value="${range.end}">
+                              <button type="button" onclick="this.parentElement.remove()">🗑️</button>
+                        `;
+                    container.appendChild(div);
+                });
+            }
+
+            const form = document.getElementById('availabilityForm');
+
+            availabilityForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const availability = { };
+
+                document.querySelectorAll('.day-block').forEach(dayBlock => {
+                    const day = dayBlock.querySelector('.time-ranges').dataset.day;
+                    const startInputs = dayBlock.querySelectorAll('.start-time');
+                    const endInputs = dayBlock.querySelectorAll('.end-time');
+
+                    const ranges = [];
+
+                    for (let i = 0; i < startInputs.length; i++) {
+                        const start = startInputs[i].value;
+                        const end = endInputs[i].value;
+                        if (start && end) {
+                            ranges.push({ start, end });
+                        }
+                    }
+
+                    if (ranges.length) {
+                        availability[day] = ranges;
+                    }
+                });
+
+
+
+                document.getElementById("availability").setAttribute("value", JSON.stringify(availability));
+                console.log(availability);
+                // Send to server
+                form.submit();
+            });
+        });
+
+        function addRange(day) {
+            const container = document.querySelector(`.time-ranges[data-day="${day}"]`);
+            const div = document.createElement('div');
+            div.innerHTML = `
+        <input type="time" class="start-time"> to
+        <input type="time" class="end-time">
+        <button type="button" onclick="this.parentElement.remove()">🗑️</button>
+      `;
+            container.appendChild(div);
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <h2>Select Your Weekly Availability</h2>
+    <form id="availabilityForm" action="/saveAvailability" method="post">
+        <input id="availability" name="availability" type="text" value="" style="display: none">
+
+        <% ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].forEach(day => { %>
+            <div class="day-block">
+                <label><%= day.charAt(0).toUpperCase() + day.slice(1) %></label>
+                <div class="time-ranges" data-day="<%= day %>">
+                    <div>
+                        <input type="time" class="start-time"> to
+                        <input type="time" class="end-time">
+                        <button type="button" onclick="this.parentElement.remove()">🗑️</button>
+                    </div>
+                </div>
+                <button type="button" onclick="addRange('<%= day %>')">Add Time Range</button>
+            </div>
+        <% }) %>
+        <br>
+        <button type="submit">Save Availability</button>
+    </form>
+    <pre id="output"></pre>
+</div>
+</body>
+</html>

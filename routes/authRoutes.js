@@ -44,7 +44,16 @@ const authRoutes = (userCollection) => {
             interests: ["Programing","Music", "Engineering"],
             image: "",
             media: [{name: "", url: ""}],
-            notifications: [{objectID: null, text: "", date: null, read: false}]
+            notifications: [{objectID: null, text: "", date: null, read: false}],
+            availability: {
+                monday:    [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+                tuesday:   [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+                wednesday: [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+                thursday:  [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+                friday:    [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+                saturday:  [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+                sunday:    [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }]
+            }
         });
         console.log("Inserted user");
 
@@ -63,7 +72,8 @@ const authRoutes = (userCollection) => {
                 skills: 1,
                 bio: 1,
                 image: 1,
-                media: 1
+                media: 1,
+                availability:1
             })
             .toArray();
         if (result.length !== 1) {
@@ -114,7 +124,8 @@ const authRoutes = (userCollection) => {
                 skills: 1,
                 bio: 1,
                 image: 1,
-                media: 1
+                media: 1,
+                availability:1
             })
             .toArray();
 

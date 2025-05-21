@@ -66,7 +66,46 @@
             </div>
         </div>
 
-        <% if (userData.media && userData.media.length > 0) { %>
+    <div class="container mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Weekly Availability</h5>
+            <a href="/set-availability" class="btn btn-sm btn-outline-primary">Edit</a>
+        </div>
+        <%=userData.availability%>
+
+            <div class="card">
+                <div class="card-body">
+                    <% if (userData.availability && Object.keys(userData.availability).length > 0) { %>
+                        <table class="table table-sm mb-0">
+                            <tbody>
+                            <%
+                                const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                            days.forEach(day => {
+                                const rawRanges = userData.availability[day];
+                                const ranges = Array.isArray(rawRanges) ? rawRanges : [];
+                                const displayDay = day.charAt(0).toUpperCase() + day.slice(1);
+                                const displayRanges = ranges.length > 0
+                                        ? ranges.map(r => `${r.start}–${r.end}`).join(', ')
+                                        : 'No availability';
+                            %>
+                            <tr>
+                                <td class="fw-semibold"><%= displayDay %></td>
+                                <td class="text-muted"><%= displayRanges %></td>
+                            </tr>
+                            <% }) %>
+                            </tbody>
+                        </table>
+                    <% } else { %>
+                        <p class="text-muted mb-0">No availability set yet.</p>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+<% if (userData.media && userData.media.length > 0) { %>
             <div class="mt-5">
                 <h5 class="mb-3">Social Links</h5>
                 <div class="row g-3">
