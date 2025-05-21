@@ -64,7 +64,12 @@ const profileRoutes = (userCollection) => {
                 ...result[0]
             };
             console.log(req.session.userProfile)
-            res.render("account",{userData: req.session.userProfile});
+            const unreadCount = 3; // Replace this with DB query if needed
+
+            res.render("account", {
+            userData: req.session.userProfile,
+            unreadCount: unreadCount
+            });
         }else{
             res.redirect("/login");
         }
@@ -100,6 +105,28 @@ const profileRoutes = (userCollection) => {
             console.error("Profile submission failed:", error);
             res.status(500).send("An error occurred while submitting the profile.");
         }
+    });
+
+    router.get("/notifications", async (req, res) => {
+        const notifications = [
+        {
+        title: "New Message",
+        message: "You received a new message from Alex.",
+        date: "2025-05-19 12:45 PM",
+        read: false
+        },
+        {
+        title: "Event Reminder",
+        message: "Don't forget your meeting at 3 PM.",
+        date: "2025-05-18 10:00 AM",
+        read: true
+        }
+    ];
+
+        res.render("notifications", {
+        notifications,
+        currentPage: "notifications"  // 👈 Add this!
+    });
     });
 
 

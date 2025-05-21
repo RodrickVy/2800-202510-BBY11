@@ -1,0 +1,14 @@
+<%- include('templates/header', {
+  css: ["css/404.css"]
+}) %>
+
+<div class="not-found-container">
+  <div class="error-code">404</div>
+  <div class="error-message">Oops! Page not found.</div>
+  <p class="error-description">
+    The page you’re looking for doesn’t exist or has been moved.
+  </p>
+  <a href="/" class="home-button">← Return to Home</a>
+</div>
+
+<%- include('templates/footer', { currentPage: '404' }) %>

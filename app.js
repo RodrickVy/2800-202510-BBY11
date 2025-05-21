@@ -57,10 +57,9 @@ app.use("/", networkRoutes(userCollection));
 
 
 
-//  Sends 404 page if route is unknown
+// Handle 404 errors last
 app.use((req, res) => {
-
-  res.render('404')
+  res.status(404).render("404");
 });
 
 // RUN SERVER

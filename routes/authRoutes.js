@@ -43,7 +43,8 @@ const authRoutes = (userCollection) => {
             bio: "",
             interests: ["Programing","Music", "Engineering"],
             image: "",
-            media: [{name: "", url: ""}]
+            media: [{name: "", url: ""}],
+            notifications: [{objectID: null, text: "", date: null, read: false}]
         });
         console.log("Inserted user");
 
