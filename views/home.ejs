@@ -1,85 +1,105 @@
-<%- include('templates/header',{css:[]}) %>
+<%- include('templates/header',{css:['css/home.css']}) %>
 
 <!-- Font Awesome CDN -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-<!-- Search Bar with Icons -->
-<div class="container my-4">
-    <div class="row g-2 align-items-center flex-wrap">
+<!-- Search Bar Section -->
+<div class="container">
+    <div class="search-container">
+        <div class="row g-2 align-items-center flex-wrap">
+            <!-- Search Input with Icon -->
+            <div class="col-12 col-md-6">
+                <div class="input-group input-group-lg">
+                    <input id="search" type="text" class="form-control" placeholder="Search alumni..." aria-label="Search" />
+                    <a id="searchBtn" class="btn btn-outline-primary" type="button">
+                        <i class="fas fa-search"></i> <!-- Search icon -->
+                    </a>
+                </div>
+            </div>
 
-        <!-- Search Input with Icon -->
-        <div class="col-12 col-md-6">
-            <div class="input-group input-group-lg">
-                <input id="search" type="text" class="form-control" placeholder="Search..." aria-label="Search" />
+            <!-- Action Buttons -->
+            <div class="col-6 col-md-3 mt-2 mt-md-0">
+                <a href="/match-alumni" class="btn btn-primary w-100">
+                    <i class="fas fa-wand-magic-sparkles me-2"></i> AI Match
+                </a>
+            </div>
 
-                <a id="searchBtn" class="btn btn-outline-primary" type="button">
-                    <i class="fas fa-search me-1"></i> Search
+            <div class="col-6 col-md-3 mt-2 mt-md-0">
+                <a href="/leaderboard" class="btn btn-success w-100">
+                    <i class="fas fa-trophy me-2"></i> Leaderboard
                 </a>
             </div>
         </div>
-
-        <!-- AI Match Button -->
-        <div class="col-6 col-md-auto">
-            <a href="/match-alumni" class="btn btn-primary w-100">
-                <i class="fas fa-wand-magic-sparkles me-2"></i> AI Match
-            </a>
-        </div>
-
-        <!-- Leaderboard Button -->
-        <div class="col-6 col-md-auto">
-            <a href="/leaderboard" class="btn btn-success w-100">
-                <i class="fas fa-trophy me-2"></i> Leaderboard
-            </a>
-        </div>
-
     </div>
 </div>
-<br><br>
 
-<div class="container py-5">
-
-
+<!-- Alumni Listing Section -->
+<div class="container py-3">
     <div class="row g-4">
         <% alumni.forEach(user => { %>
             <div class="col-12">
                 <div class="card shadow-sm h-100">
-                    <a href="connect/<%=user.username%>" style="text-decoration: none">
-                        <div style="cursor: pointer" class="row g-0 align-items-center">
-
+                    <a href="connect/<%=user.username%>" style="text-decoration: none; color: inherit;">
+                        <div style="cursor: pointer" class="row g-0 align-items-center p-3">
                             <!-- Image Column -->
-                            <div class="col-md-3 text-center p-3">
-                                     <span class="badge bg-success text-dark d-inline-flex align-items-center px-3 py-2 fs-6 rounded-pill shadow-sm">
-                            <i class="bi bi-fire text-danger me-2"></i>
-                            <strong><%= user.points || 0 %> Points</strong>
-                            </span>
-                                <br><br>
-                                <img src="<%= user.image || '/default-profile.png' %>" class="rounded-circle img-fluid" style="width: 120px; height: 120px; object-fit: cover;" alt="Profile">
-                            </div>
-
-                            <!-- Info Column -->
-                            <div class="col-md-9">
-                                <div class="card-body">
-                                    <h5 class="card-title mb-1"><%= user.name %> <%= user.lastname %></h5>
-                                    <p class="text-muted mb-2">
-                                        <%= user.work?.[0]?.role || 'No current role listed' %>
-                                    </p>
-
-                                    <% if (user.work && user.work.length > 0) { %>
-                                        <ul class="list-group list-group-flush">
-                                            <% user.work.forEach((job, i) => { %>
-                                                <li class="list-group-item px-0">
-                                                    <strong><%= job.role %></strong> at <%= job.company %><br>
-                                                    <small class="text-muted"><%= job.years %></small><br>
-                                                    <em><%= job.description %></em>
-                                                </li>
-                                            <% }); %>
-                                        </ul>
-                                    <% } else { %>
-                                        <p class="text-muted">No work history available.</p>
-                                    <% } %>
+                            <div class="col-md-2 text-center">
+                                <div class="position-relative">
+                                    <img src="<%= user.image || '/default-profile.png' %>" 
+                                         class="rounded-circle profile-img" 
+                                         style="width: 100px; height: 100px; object-fit: cover;" 
+                                         alt="Profile">
+                                    <span class="points-badge badge position-absolute top-0 start-50 translate-middle d-inline-flex align-items-center px-2 py-1 rounded-pill shadow-sm">
+                                        <i class="fas fa-bolt me-1"></i>
+                                        <strong><%= user.points || 0 %></strong>
+                                    </span>
                                 </div>
                             </div>
 
+                            <!-- Info Column -->
+                            <div class="col-md-10">
+                                <div class="card-body py-0">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h5 class="card-title mb-1"><%= user.name %> <%= user.lastname %></h5>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-light text-dark"><%= user.status || 'Alumni' %></span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-2">
+                                        <% if (user.work && user.work.length > 0) { %>
+                                            <% user.work.forEach((work, index) => { %>
+                                                <div class="pb-2 mb-2" style="border-bottom: 1px solid var(--light-gray);">
+                                                    <p class="mb-1">
+                                                        <h6 class="title-text"><%= work.role || 'No role listed' %></h6>
+                                                        <strong class="d-block mt-1"><%= work.company %></strong>
+                                                        <% if (work.years) { %>
+                                                            <span class="text-muted ms-2"><%= work.years %></span>
+                                                        <% } %>
+                                                    </p>
+                                                    <% if (work.description) { %>
+                                                        <p class="text-muted mb-0"><%= work.description %></p>
+                                                    <% } %>
+                                                </div>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <p class="text-muted">No work history available.</p>
+                                        <% } %>
+                                    </div>
+                                    
+                                    <% if (user.skills && user.skills.length > 0) { %>
+                                        <div class="mt-3">
+                                            <% user.skills.slice(0, 5).forEach(skill => { %>
+                                                <span class="badge bg-light text-dark me-1 mb-1"><%= skill %></span>
+                                            <% }); %>
+                                            <% if (user.skills.length > 5) { %>
+                                                <span class="badge bg-light text-dark">+<%= user.skills.length - 5 %> more</span>
+                                            <% } %>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
                         </div>
                     </a>
                 </div>
@@ -87,12 +107,18 @@
         <% }); %>
     </div>
 </div>
-<script>
 
+<script>
     document.getElementById("search").addEventListener("input", (event) => {
         document.getElementById("searchBtn").setAttribute("href","/search?query="+document.getElementById("search").value)
-    })
+    });
+    
+    // Add enter key functionality
+    document.getElementById("search").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            window.location.href = "/search?query=" + this.value;
+        }
+    });
 </script>
 
 <%- include('templates/footer', {currentPage:'home'}) %>
-

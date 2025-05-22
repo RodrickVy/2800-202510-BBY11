@@ -1,0 +1,134 @@
+:root {
+    --primary-blue: #013C70;
+    --light-gray: #F3F2F3;
+    --accent-yellow: #F2E205;
+    --off-white: #FFFFEE;
+    --dark-yellow: #D9CB00;
+    /* New variable for yellow hover state */
+    --dark-blue: #002D57;
+    /* New variable for blue hover state */
+}
+
+body {
+    background-color: var(--light-gray);
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    background-color: white;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Primary Button (AI Match) */
+.btn-primary {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    color: white;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--dark-blue);
+    border-color: var(--dark-blue);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Success Button (Leaderboard) */
+.btn-success {
+    background-color: var(--accent-yellow);
+    border-color: var(--accent-yellow);
+    color: var(--primary-blue);
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-success:hover,
+.btn-success:focus {
+    background-color: var(--dark-yellow);
+    border-color: var(--dark-yellow);
+    color: var(--primary-blue);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Outline Button (Search) */
+.btn-outline-primary {
+    color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    transition: all 0.2s ease;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+    background-color: var(--primary-blue);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.points-badge {
+    background-color: var(--accent-yellow);
+    color: var(--primary-blue);
+    font-weight: bold;
+}
+
+.search-container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2rem;
+}
+
+/* Remove default focus outline and add custom styling */
+#search:focus {
+    outline: none;
+    border-color: var(--accent-yellow);
+    box-shadow: 0 0 0 0.25rem rgba(242, 226, 5, 0.25);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* Style for the search input */
+#search {
+    border: 2px solid var(--light-gray);
+    transition: all 0.2s ease;
+    padding: 0.5rem 1rem;
+}
+
+#search:hover {
+    border-color: var(--primary-blue);
+}
+
+/* Optional: Style for the input group to match */
+.input-group-lg .form-control {
+    border-radius: 0.5rem 0 0 0.5rem;
+}
+
+.input-group-lg .btn {
+    border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.card-title {
+    color: var(--primary-blue);
+    font-weight: 600;
+}
+
+.profile-img {
+    border: 3px solid var(--accent-yellow);
+}
+
+/* Style for titles (e.g., UX Developer, Student Developer) */
+.title-text {
+    color: var(--primary-blue);
+    font-weight: 600;
+}
