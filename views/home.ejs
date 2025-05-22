@@ -19,13 +19,13 @@
 
             <!-- Action Buttons -->
             <div class="col-6 col-md-3 mt-2 mt-md-0">
-                <a href="/match-alumni" class="btn btn-primary w-100">
+                <a href="/match-alumni" class="btn btn-primary w-100 d-flex align-items-center justify-content-center" style="height: 38px;">
                     <i class="fas fa-wand-magic-sparkles me-2"></i> AI Match
                 </a>
             </div>
 
             <div class="col-6 col-md-3 mt-2 mt-md-0">
-                <a href="/leaderboard" class="btn btn-success w-100">
+                <a href="/leaderboard" class="btn btn-success w-100 d-flex align-items-center justify-content-center" style="height: 38px;">
                     <i class="fas fa-trophy me-2"></i> Leaderboard
                 </a>
             </div>
@@ -70,7 +70,7 @@
                                     <div class="mt-2">
                                         <% if (user.work && user.work.length > 0) { %>
                                             <% user.work.forEach((work, index) => { %>
-                                                <div class="pb-2 mb-2" style="border-bottom: 1px solid var(--light-gray);">
+                                                <div class="pb-2 mb-2" style="border-bottom: 1px solid var(--light-gray); border-left: 2px solid var(--accent-yellow); padding-left: 10px;">
                                                     <p class="mb-1">
                                                         <h6 class="title-text"><%= work.role || 'No role listed' %></h6>
                                                         <strong class="d-block mt-1"><%= work.company %></strong>
