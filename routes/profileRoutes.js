@@ -3,8 +3,6 @@ const router = express.Router();
 const multer = require("multer");
 const path = require('path');
 const { ObjectId } = require('mongodb');
-// const { isAuthenticated } = require('./authRoutes');
-// const { GEOAPIFY_API_KEY } = require('../config');
 const {
     getAllUsers,
     addPoints,
@@ -288,38 +286,43 @@ const profileRoutes = (userCollection,meetingsCollection,notificationsCollection
             { client, targetId: new ObjectId(target), startTime },
             { $set: { accepted: true } }
         );
-       const meeting = ( await meetingsCollection.find(
+        const meeting = (await meetingsCollection.find(
             { client, targetId: new ObjectId(target), startTime }
         ).project({
-           client:1,
-           targetId:1,
-           accepted:1,
-           day:1,
-           startTime:1,
-           duration:1,
-           notes:1,
-           createdAt:1
-       }).toArray())[0];
+            client: 1,
+            targetId: 1,
+            accepted: 1,
+            day: 1,
+            startTime: 1,
+            duration: 1,
+            notes: 1,
+            location: 1,
+            meetingType: 1,
+            createdAt: 1
+        }).toArray())[0];
 
+        if (!meeting) {
+            return res.status(404).send('Meeting not found');
+        }
 
-       const meetingProfiles = await getMeetingProfiles(meeting,userCollection);
-       let profileToNotify = {};
-       if(meetingProfiles.targetProfile.username === req.session.username){
-           profileToNotify = meetingProfiles.clientProfile;
-       }else{
-           profileToNotify = meetingProfiles.targetProfile;
-       }
+        const meetingProfiles = await getMeetingProfiles(meeting, userCollection);
+        let profileToNotify = {};
+        if (meetingProfiles.targetProfile.username === req.session.username) {
+            profileToNotify = meetingProfiles.clientProfile;
+        } else {
+            profileToNotify = meetingProfiles.targetProfile;
+        }
 
         await createNotification({
             notificationsCollection,
-            title: 'Your meeting with @' + req.session.userProfile.name +' has been accepted.',
-            message: '@' + req.session.username + " accepted your meeting for "+ meeting.day + " at "+ meeting.startTime,
+            title: 'Your meeting with @' + req.session.userProfile.name + ' has been accepted.',
+            message: '@' + req.session.username + " accepted your meeting for " + meeting.day + " at " + meeting.startTime,
             directTo: '/connect/meetings',
             targetId: profileToNotify._id
         });
-        await addPoints(req.session.username, 300,userCollection,notificationsCollection);
+        await addPoints(req.session.username, 300, userCollection, notificationsCollection);
 
-        res.redirect("/connect/meetings/outgoing");
+        res.redirect("/connect/meetings/scheduled");
     });
 
     router.get('/connect/meetings/reject', async (req, res) => {

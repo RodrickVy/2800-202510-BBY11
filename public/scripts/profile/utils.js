@@ -116,11 +116,13 @@ async function loadMeetings(meetingsCollection, userCollection, req, res) {
         startTime: 1,
         duration: 1,
         notes: 1,
+        location: 1,
+        meetingType: 1,
         createdAt: 1
     }).toArray();
 
     const incomingMeetingsRequest = incoming.filter((e) => e.accepted === false).map(function (e) {
-        const targetProfile = alumni.find((a) => a._id.equals(e.targetId));
+        const targetProfile = allUsers.find((a) => a._id.equals(e.targetId));
         const clientProfile = allUsers.find((a) => a.username === e.client);
         return {
             ...e,
@@ -131,20 +133,20 @@ async function loadMeetings(meetingsCollection, userCollection, req, res) {
     });
 
     const scheduledMeetings = [...incoming, ...outgoing].filter((meeting) => meeting.accepted === true).map(function (meeting) {
-        let profile = {};
-        if (userId === meeting.targetId) {
-            profile = allUsers.find((user) => user.username === meeting.client);
+        let otherParty = {};
+        if (meeting.targetId.equals(userId)) {
+            otherParty = allUsers.find((user) => user.username === meeting.client);
         } else {
-            profile = alumni.find((user) => user._id.equals(meeting.targetId));
+            otherParty = allUsers.find((user) => user._id.equals(meeting.targetId));
         }
         return {
             ...meeting,
-            otherParty: profile
+            otherParty: otherParty
         };
     });
 
     const outgoingMeetingRequest = outgoing.filter((e) => e.accepted === false).map(function (e) {
-        const targetProfile = alumni.find((a) => a._id.equals(e.targetId));
+        const targetProfile = allUsers.find((a) => a._id.equals(e.targetId));
         const clientProfile = allUsers.find((a) => a.username === e.client);
         return {
             ...e,
