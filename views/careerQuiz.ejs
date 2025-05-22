@@ -24,45 +24,41 @@
 <body>
 <div class="container">
     <br><br><br>
-    <h4 class=" fw-bold text-center mb-2"><%= title %></h4>
+    <h4 class="fw-bold text-center mb-2"><%= title %></h4>
     <p class="lead text-center text-muted mb-4"><%= description %></p>
     <div class="card">
         <div class="card-body">
-
-
             <form id="quizForm" method="POST" action="/submitCareerQuiz">
-
-                <% questions.forEach((q, i) => { %>
-
-                    <div class="question-step" data-step="<%= i %>" style="display: <%= i === 0 ? 'block' : 'none' %>">
-                        <p data-step="<%= i %>"  class="text-sm-center"><%=i + 1 %>/<%=questions.length%> </p>
-                        <h5 class="display-6 p-2" > <%= q.question %></h5>
+                <% questions.forEach(function(q, i) { %>
+                    <div class="question-step" data-step="<%= i %>" style="display: <%= (i === 0) ? 'block' : 'none' %>">
+                        <p data-step="<%= i %>" class="text-sm-center">Question <%= i + 1 %> of <%= questions.length %></p>
+                        <h5 class="display-6 p-2"><%= q.question %></h5>
                         <br>
                         <% let sortedOptions = q.options.slice().sort(); %>
-                        <% sortedOptions.forEach((opt, j) => { %>
+                        <% sortedOptions.forEach(function(opt, j) { %>
                             <div class="form-check mb-2">
                                 <input class="form-check-input" type="radio" name="question-<%= q.id %>" id="q<%= q.id %>-opt<%= j %>" value="<%= opt %>">
                                 <label class="form-check-label option-label" for="q<%= q.id %>-opt<%= j %>"><%= String.fromCharCode(65 + j) %>. <%= opt %></label>
                             </div>
                         <% }); %>
-
                         <div class="mt-4 d-flex justify-content-between">
-                            <button type="button" style="background: #F3F2F3;color: #555555" class="btn btn-explore   prev-btn" <%= i === 0 ? 'disabled' : '' %>>Previous</button>
-                            <button type="button" class="btn btn-explore btn-primary next-btn"><%= i === questions.length - 1 ? "🪄 Generate": 'Next' %></button>
+                            <button type="button" style="background: #F3F2F3;color: #555555" class="btn btn-explore prev-btn" <%= (i === 0) ? 'disabled' : '' %>>Previous</button>
+                            <button type="button" class="btn btn-explore btn-primary next-btn"><%= (i === questions.length - 1) ? "Generate Results" : 'Next' %></button>
                         </div>
                     </div>
-                <% }) %>
-
+                <% }); %>
                 <input type="hidden" name="quizAnswers" id="quizAnswers" />
             </form>
 
             <div id="result" class="mt-5" style="display: none;">
-                <h5>cooking your report....</h5>
+                <h5>Generating your report...</h5>
             </div>
         </div>
     </div>
+
 </div>
 
+<script src="/scripts/career/careerQuiz.js"></script>
 <script>
     const steps = document.querySelectorAll('.question-step');
     let currentStep = 0;
@@ -84,6 +80,7 @@
                 showStep(currentStep + 1);
             } else {
                 const answers = {};
+                const questions = <%- JSON.stringify(questions) %>;
                 steps.forEach((step, i) => {
                     const selected = step.querySelector('input[type="radio"]:checked');
                     if (selected) answers[`Q${i + 1}`] = selected.value;
@@ -92,9 +89,11 @@
                 document.getElementById('result').style.display = 'block';
                 // document.getElementById('answersJson').textContent = JSON.stringify(answers, null, 2);
 
-                const formatted = Object.entries(answers)
-                    .map(([key, val]) => `${key}: ${val}`)
-                    .join(' | ');
+                let formatted = '';
+
+                Object.values(answers).forEach((value, index) => {
+                    formatted += questions[index].question + ": " + value + "\n";
+                });
                 document.getElementById('quizAnswers').value = formatted;
 
                 document.getElementById('quizForm').submit();

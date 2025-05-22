@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<style>
+    body {
+        background-color: #f8d7da;
+        padding-top: 60px;
+    }
+    .error-card {
+        max-width: 600px;
+        margin: auto;
+        background-color: #ffffff;
+        border-left: 5px solid #dc3545;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+</style>
+
+<%- include('templates/header',{css:["css/index.css"]}) %>
+<body>
+<div class="container">
+    <div class="error-card">
+        <h2 class="text-danger">⚠️ Something Went Wrong</h2>
+        <p class="mb-4"><%=error %> </p>
+        <a href="<%=redirectLink%>" class="btn btn-danger">🔁 <%=redirectLinkCTA%></a>
+    </div>
+</div>
+</body>
+<%- include('templates/footer', {currentPage:'currentPage'}) %>
+</html>

@@ -13,16 +13,7 @@ const { authRoutes } = require("./routes/authRoutes.js");
 const { careerRoutes } = require("./routes/careerRoutes.js");
 const { profileRoutes } = require("./routes/profileRoutes.js");
 const {networkRoutes} = require("./routes/networkRoutes.js");
-// Redirects to notfound if a person tries to access HTML files directly.
-app.use((req, res, next) => {
-  const pattern = /^\/app\/[^\/]+\/[^\/]+\.html$/;
 
-  if (pattern.test(req.path)) {
-    res.redirect("/notFound");
-  } else {
-    next();
-  }
-});
 
 /* secret information section */
 const mongodb_host = process.env.MONGODB_HOST;
@@ -35,7 +26,8 @@ const node_session_secret = process.env.NODE_SESSION_SECRET;
 var { database } = include("databaseConnection");
 
 const userCollection = database.db(mongodb_database).collection("users");
-
+const meetingsCollection = database.db(mongodb_database).collection("meetings");
+const notificationsCollection= database.db(mongodb_database).collection("notifications");
 // MongoDB connection
 var mongoStore = MongoStore.create({
   mongoUrl: process.env.MONGODB_HOST,
@@ -61,44 +53,14 @@ app.use(
 // mount to the home page
 app.use("/", authRoutes(userCollection));
 app.use("/", careerRoutes(userCollection));
-app.use("/", profileRoutes(userCollection));
-app.use("/", networkRoutes());
+app.use("/", profileRoutes(userCollection,meetingsCollection,notificationsCollection));
+app.use("/", networkRoutes(userCollection));
 
-// Intro page
-app.get("/", async (req, res) => {
-  res.render("home", { css: [null] });
-});
 
-// Home page
-app.get("/home", async (req, res) => {
-  res.send(await loadPage("./app/home/home.html"));
-});
 
-// Serve the create profile page
-app.get("/createprofile", async (req, res) => {
-  res.send(await loadPage("./app/profile/createprofile.html"));
-});
-
-// Handle form submission
-app.post('/createprofile', (req, res) => {
-  // Handle form data (save it, validate, etc.)
-  res.redirect('/createprofile2'); // This performs the actual redirect
-});
-
-// Serve the next page after form is submitted
-app.get("/createprofile2", async (req, res) => {
-  res.send(await loadPage("./app/profile/createprofile2.html"));
-});
-
-// Account page
-app.get("/account", async (req, res) => {
-  res.send(await loadPage("./app/account/account.html"));
-});
-
-//  Sends 404 page if route is unknown
+// Handle 404 errors last
 app.use((req, res) => {
-  const html = fs.readFileSync("./public/components/404.html", "utf8");
-  res.status(404).send(html);
+  res.status(404).render("404");
 });
 
 // RUN SERVER

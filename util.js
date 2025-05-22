@@ -1,3 +1,4 @@
+// Utility functions for file injection and icon mapping
 const fs = require("fs");
 const path = require("path");
 
@@ -9,7 +10,6 @@ const path = require("path");
 async function loadPage(pageFilePath) {
   // Read the main page file
   const pageContent = fs.readFileSync(pageFilePath, "utf8");
-  console.log(pageContent);
 
   // Define the paths to the app bar and footer files
   const appBarPath = "./public/components/appbar.html";
@@ -25,8 +25,6 @@ async function loadPage(pageFilePath) {
     fs.readFileSync(globalScriptsPath, "utf8"),
   ]);
 
-  console.log(appBarHTML);
-  console.log(footerHTML);
   // Replace placeholders in the main page
   return pageContent
     .replace("<!--GLOBAL_SCRIPTS-->", scripts)
@@ -36,6 +34,7 @@ async function loadPage(pageFilePath) {
 }
 
 function getCareerIcon(title) {
+  // Returns a Bootstrap icon class for a given career title
   const iconMap = {
     'Software Developer': 'bi-code-slash',
     'Data Analyst': 'bi-bar-chart-line',
@@ -62,6 +61,7 @@ function getCareerIcon(title) {
   return iconMap[title] || 'bi-briefcase';
 }
 
+// Global include helpers for absolute imports
 //Define the include function for absolute file name
 global.base_dir = __dirname;
 global.abs_path = function (path) {

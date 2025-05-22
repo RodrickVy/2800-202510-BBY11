@@ -1,0 +1,41 @@
+<fieldset class="border p-3 mb-3 rounded shadow-sm">
+    <div class="row g-3 align-items-center">
+
+        <div class="col-md-3">
+            <label for="site_<%= index %>" class="form-label">site</label>
+            <select class="form-control" id="site_<%= index %>" name="site">
+                <option value="">-- Select Site Type --</option>
+                <option value="LinkedIn">LinkedIn</option>
+                <option value="GitHub">GitHub</option>
+                <option value="Personal Portfolio">Personal Portfolio</option>
+                <option value="Resume">Resume</option>
+                <option value="Professional Website">Professional Website</option>
+                <option value="Project Showcase">Project Work</option>
+                <option value="Company Website">Biz Website</option>
+                <option value="Dribbble">Dribbble</option>
+                <option value="Behance">Behance</option>
+                <option value="Medium">Medium</option>
+                <option value="Dev.to">Dev.to</option>
+                <option value="YouTube Channel">YouTube Channel</option>
+                <option value="Twitter (X)">Twitter (X)</option>
+                <option value="Instagram (Work)">Instagram (Work)</option>
+                <option value="CodePen">CodePen</option>
+                <option value="Stack Overflow">Stack Overflow</option>
+                <option value="Notion Page">Notion Page</option>
+                <option value="Figma Community">Figma Community</option>
+                <option value="Kaggle Profile">Kaggle Profile</option>
+                <option value="Other">Other</option>
+            </select>
+
+        </div>
+        <div class="col-md-3">
+            <label for="url_<%= index %>" class="form-label">Url</label>
+            <input type="text" class="form-control" id="url_<%= index %>" name="url" placeholder="e.g. https://" />
+        </div>
+        <div class="col-md-12 d-flex align-items-end">
+            <button type="button" class="btn btn-outline-danger remove-btn w-100">Remove</button>
+        </div>
+
+
+    </div>
+</fieldset>

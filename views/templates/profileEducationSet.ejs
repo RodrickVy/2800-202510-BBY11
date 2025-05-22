@@ -1,0 +1,29 @@
+<fieldset class="border p-3 mb-3 rounded shadow-sm">
+    <div class="row g-3 align-items-center">
+
+        <div class="col-md-3">
+            <label for="credentials_<%= index %>" class="form-label">Credentials</label>
+            <input type="text" class="form-control" id="credentials_<%= index %>" name="credentials" placeholder="e.g. Degree, Diploma" />
+        </div>
+
+        <div class="col-md-3">
+            <label for="institution_<%= index %>" class="form-label">Institution</label>
+            <input type="text" class="form-control" id="institution_<%= index %>" name="institution" placeholder="e.g. BCIT" />
+        </div>
+
+        <div class="col-md-2">
+            <label for="endyear_<%= index %>" class="form-label">End Year</label>
+            <input type="text" class="form-control" id="endyear_<%= index %>" name="endyear" placeholder="e.g. 2024" />
+        </div>
+
+        <div class="col-md-3">
+            <label for="program_<%= index %>" class="form-label">Program</label>
+            <input type="text" class="form-control" id="program_<%= index %>" name="program" placeholder="e.g. Computer Systems Tech" />
+        </div>
+
+        <div class="col-12 d-flex align-items-end">
+            <button type="button" class="btn btn-outline-danger remove-btn w-100">Remove</button>
+        </div>
+
+    </div>
+</fieldset>

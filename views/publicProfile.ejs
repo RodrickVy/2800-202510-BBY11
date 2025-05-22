@@ -1,0 +1,205 @@
+<!-- views/viewProfile.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('templates/header',{css:["/css/index.css"]}) %>
+  <!-- <link rel="stylesheet" href="/css/calendar.css" /> -->
+
+  <body>
+    <!-- Profile Section -->
+    <%- include('templates/profile', { userData: userData }) %>
+
+    <!-- Schedule Meeting Section -->
+    <div class="container mt-5">
+      <h4 class="mb-3">Schedule a Meeting with <%= userData.name %></h4>
+      <div class="card">
+        <div class="card-body">
+          <form action="/schedule-meeting" method="POST">
+            <input
+              type="hidden"
+              name="targetUserId"
+              value="<%= userData._id %>"
+            />
+
+            <div class="mb-3">
+              <label for="meetingDay" class="form-label">Day of the Week</label>
+              <select class="form-select" name="day" id="meetingDay" required>
+                <% Object.keys(userData.availability || {}).forEach(day => { %>
+                <option value="<%= day %>">
+                  <%= day.charAt(0).toUpperCase() + day.slice(1) %>
+                </option>
+                <% }) %>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="startTime" class="form-label">Start Time</label>
+              <select
+                class="form-select"
+                name="startTime"
+                id="startTime"
+                required
+              ></select>
+            </div>
+
+            <div class="mb-3">
+              <label for="duration" class="form-label">Meeting Length</label>
+              <select
+                class="form-select"
+                name="duration"
+                id="duration"
+                required
+              >
+                <option value="30">30 minutes</option>
+                <option value="60">1 hour</option>
+                <option value="90">1 hour 30 mins</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="meetingType" class="form-label">Meeting Type</label>
+              <select
+                class="form-select"
+                name="meetingType"
+                id="meetingType"
+                required
+              >
+                <option value="virtual">Virtual</option>
+                <option value="inperson">In-Person</option>
+              </select>
+            </div>
+
+            <div class="mb-3 position-relative">
+              <label for="location" class="form-label">Location</label>
+              <input
+                type="text"
+                class="form-control"
+                name="location"
+                id="location"
+                placeholder="Enter meeting link or address"
+                required
+                autocomplete="off"
+              />
+              <div
+                id="location-suggestions"
+                class="list-group w-100"
+                style="z-index: 1000"
+              ></div>
+            </div>
+
+            <div class="mb-3">
+              <label for="notes" class="form-label">Meeting Notes</label>
+              <textarea
+                class="form-control"
+                name="notes"
+                id="notes"
+                rows="4"
+                required
+              ></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              Schedule Meeting
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <%- include('templates/footer', {currentPage:'home'}) %>
+
+    <script>
+      //EJS syntax for embedding JavaScript
+      const availability = <%- JSON.stringify(userData.availability || {}) %>;
+
+      const daySelect = document.getElementById("meetingDay");
+      const startTimeSelect = document.getElementById("startTime");
+      const meetingTypeSelect = document.getElementById("meetingType");
+      const locationInput = document.getElementById("location");
+      const suggestionBox = document.getElementById("location-suggestions");
+
+      function timeToMinutes(timeStr) {
+        const [h, m] = timeStr.split(":").map(Number);
+        return h * 60 + m;
+      }
+
+      function minutesToTime(mins) {
+        const h = Math.floor(mins / 60)
+          .toString()
+          .padStart(2, "0");
+        const m = (mins % 60).toString().padStart(2, "0");
+        return `${h}:${m}`;
+      }
+
+      function populateStartTimes(day) {
+        const ranges = availability[day] || [];
+        startTimeSelect.innerHTML = "";
+
+        ranges.forEach(({ start, end }) => {
+          let startMins = timeToMinutes(start);
+          const endMins = timeToMinutes(end);
+
+          while (startMins + 30 <= endMins) {
+            const option = document.createElement("option");
+            option.value = minutesToTime(startMins);
+            option.textContent = minutesToTime(startMins);
+            startTimeSelect.appendChild(option);
+            startMins += 15;
+          }
+        });
+      }
+
+      function fetchLocationSuggestions(query) {
+        return fetch(`/location-suggest?q=${encodeURIComponent(query)}`).then(
+          (res) => res.json()
+        );
+      }
+
+      function renderSuggestions(suggestions) {
+        suggestionBox.innerHTML = "";
+        suggestions.forEach((loc) => {
+          const display = loc.properties.formatted;
+          const item = document.createElement("button");
+          item.type = "button";
+          item.className = "list-group-item list-group-item-action";
+          item.textContent = display;
+          item.addEventListener("click", () => {
+            locationInput.value = display;
+            suggestionBox.innerHTML = "";
+          });
+          suggestionBox.appendChild(item);
+        });
+      }
+
+      daySelect.addEventListener("change", (e) => {
+        populateStartTimes(e.target.value);
+      });
+
+      meetingTypeSelect.addEventListener("change", (e) => {
+        locationInput.value = "";
+        suggestionBox.innerHTML = "";
+        if (e.target.value === "virtual") {
+          locationInput.placeholder =
+            "Enter meeting link (Zoom, Google Meet, etc.)";
+        } else {
+          locationInput.placeholder = "Enter location...";
+        }
+      });
+
+      locationInput.addEventListener("input", async (e) => {
+        const query = e.target.value;
+        if (meetingTypeSelect.value === "inperson" && query.length >= 3) {
+          try {
+            const suggestions = await fetchLocationSuggestions(query);
+            renderSuggestions(suggestions);
+          } catch (err) {
+            console.error("Location suggestion failed:", err);
+          }
+        } else {
+          suggestionBox.innerHTML = "";
+        }
+      });
+
+      // Initial setup
+      if (daySelect.value) populateStartTimes(daySelect.value);
+    </script>
+  </body>
+</html>

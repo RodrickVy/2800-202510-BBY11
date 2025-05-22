@@ -1,0 +1,12 @@
+.unread {
+  background-color: #f0f8ff;
+  border-left: 4px solid #007bff;
+}
+
+.list-group-item {
+  transition: background 0.3s ease;
+}
+
+.list-group-item:hover {
+  background-color: #f9f9f9;
+}

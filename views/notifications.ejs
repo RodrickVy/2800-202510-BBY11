@@ -1,0 +1,59 @@
+<%- include('templates/header', {
+css: [
+"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css",
+"css/notifications.css"
+]
+}) %>
+
+<div class="container py-5">
+    <h2 class="mb-4">Your Notifications</h2>
+
+    <% if (notifications.length === 0) { %>
+        <div class="alert alert-info">You have no notifications.</div>
+    <% } else { %>
+        <!-- Unread Notifications -->
+        <% const unread = notifications.filter(n => !n.readStatus).sort((a, b) => new Date(b.dateSent) - new Date(a.dateSent)); %>
+        <% if (unread.length > 0) { %>
+            <h5 class="mb-3">Unread</h5>
+            <div class="list-group mb-4">
+                <% unread.forEach(notification => { %>
+                    <a href="/notification/read?targetId=<%=notification.targetId%>&dateSent=<%=notification.dateSent%>&directTo=<%=notification.directTo%>" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center unread">
+                        <div>
+                            <h6 class="mb-1"><%= notification.title %></h6>
+                            <p class="mb-0 text-muted"><%= notification.message %></p>
+                            <small class="text-secondary"><i class="far fa-clock"></i> <%= new Date(notification.dateSent).toLocaleString() %></small>
+                        </div>
+                        <span class="badge bg-primary">New</span>
+                    </a>
+                <% }); %>
+            </div>
+        <% } %>
+
+        <!-- Read Notifications -->
+        <% const read = notifications.filter(n => n.readStatus).sort((a, b) => new Date(b.dateSent) - new Date(a.dateSent)); %>
+        <% if (read.length > 0) { %>
+            <h5 class="mb-3">Read</h5>
+            <div class="list-group">
+                <% read.forEach(notification => { %>
+                    <a  href="/notification/read?targetId=<%=notification.targetId%>&dateSent=<%=notification.dateSent%>&directTo=<%=notification.directTo%>"  class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1"><%= notification.title %></h6>
+                            <p class="mb-0 text-muted"><%= notification.message %></p>
+                            <small class="text-secondary"><i class="far fa-clock"></i> <%= new Date(notification.dateSent).toLocaleString() %></small>
+                        </div>
+                    </a>
+                <% }); %>
+            </div>
+        <% } %>
+
+        <div class="mt-4 text-end">
+            <form method="POST" action="/notifications/mark-all-read">
+                <button class="btn btn-sm btn-outline-secondary" type="submit">
+                    <i class="fas fa-check-circle me-1"></i> Mark All as Read
+                </button>
+            </form>
+        </div>
+    <% } %>
+</div>
+
+<%- include('templates/footer', { currentPage: "notifications" }) %>
