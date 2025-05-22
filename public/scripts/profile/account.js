@@ -1,5 +1,3 @@
-
-
 // Improved function to add Edit Availability button
 function addAvailabilityButton() {
     // Find all section titles
@@ -65,7 +63,6 @@ function getUserLocation() {
 
 // Initialize everything when DOM loads
 document.addEventListener('DOMContentLoaded', function () {
-  console.log('DOM Content Loaded');
-  addAvailabilityButton();
-  getUserLocation();
+    addAvailabilityButton();
+    getUserLocation();
 });

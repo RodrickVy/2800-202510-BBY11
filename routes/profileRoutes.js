@@ -70,7 +70,6 @@ const profileRoutes = (userCollection,meetingsCollection,notificationsCollection
             req.session.userProfile = {
                 ...result[0]
             };
-            console.log(req.session.userProfile)
             const unreadCount = 3; // Replace this with DB query if needed
 
             res.render("account", {
@@ -86,7 +85,6 @@ const profileRoutes = (userCollection,meetingsCollection,notificationsCollection
     router.post('/submitProfile', upload.single('profileImage'), async (req, res) => {
         try {
             const defaultImagePath = "userProfiles/default.png"; // this should exist in your /public/userProfiles folder
-            console.log("Bio" + req.body.bio);
             const updates = {
                 name: req.body.firstname,
                 lastname: req.body.lastname,
@@ -141,8 +139,6 @@ const profileRoutes = (userCollection,meetingsCollection,notificationsCollection
 
 
     router.get("/create-profile", isAuthenticated, async (req, res) => {
-        console.log("Some data" + req.session.userProfile)
-
         res.render("createProfile", {userData: req.session.userProfile});
     });
 
@@ -155,9 +151,6 @@ const profileRoutes = (userCollection,meetingsCollection,notificationsCollection
         const availability = req.body.availability;
         const username = req.session.username;
 
-
-        console.log(availability)
-        console.log("data out")
         if (!req.session.authenticated) {
              res.redirect("/login")
             return;
@@ -369,7 +362,6 @@ const profileRoutes = (userCollection,meetingsCollection,notificationsCollection
 
     router.get("/connect/:username", async (req, res) => {
         const username = req.params.username
-        console.log(username)
         const result = await userCollection
             .find({ username: username })
             .project({
@@ -475,8 +467,7 @@ const profileRoutes = (userCollection,meetingsCollection,notificationsCollection
 
             const response = await fetch(url);
             const data = await response.json();
-            console.log( data)
-            res.json( data.features);
+            res.json(data.features);
         } catch (err) {
             console.error('Nominatim error:', err);
             res.status(500).json({ error: 'Failed to fetch suggestions',message:err});
@@ -487,7 +478,6 @@ const profileRoutes = (userCollection,meetingsCollection,notificationsCollection
 
     router.get('/notification/read', async (req, res) => {
         const { targetId, dateSent, directTo } = req.query;
-        console.log(req.query)
         if (!targetId || !dateSent || !directTo) {
             return res.status(400).send('Missing required query parameters.');
         }

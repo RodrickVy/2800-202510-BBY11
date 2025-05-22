@@ -1,3 +1,4 @@
+// Authentication and user signup/login routes
 const express = require("express");
 const Joi = require("joi");
 const bcrypt = require("bcrypt");
@@ -6,11 +7,14 @@ const saltRounds = 12;
 const router = express.Router();
 const expireTime = 1 * 60 * 60 * 1000; // 1 hour
 
+// Main router for authentication (signup, login, logout)
 const authRoutes = (userCollection) => {
+  // Signup page
   router.get("/signup", (req, res) => {
     res.render("signup", { error: null });
   });
 
+  // Handle signup form submission
   router.post("/submitUser", async (req, res) => {
     const { name, username, password } = req.body;
 
@@ -128,11 +132,13 @@ const authRoutes = (userCollection) => {
     res.redirect("create-profile");
   });
 
+  // Login page
   router.get("/login", (req, res) => {
     const error = req.query.error;
     res.render("login", { error });
   });
 
+  // Handle login form submission
   router.post("/loggingin", async (req, res) => {
     const { username, password } = req.body;
 
@@ -188,6 +194,7 @@ const authRoutes = (userCollection) => {
     res.redirect("/account");
   });
 
+  // Logout route
   router.get("/logout", (req, res) => {
     req.session.destroy((err) => {
       if (err) {

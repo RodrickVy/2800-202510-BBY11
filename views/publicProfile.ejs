@@ -67,7 +67,8 @@
 <%- include('templates/footer', {currentPage:'home'}) %>
 
 <script>
-    const availability = <%- JSON.stringify(userData.availability || {}) %>;
+    //EJS syntax for embedding JavaScript
+    const availability = JSON.parse('<%= JSON.stringify(userData.availability || {}) %>');
 
     const daySelect = document.getElementById('meetingDay');
     const startTimeSelect = document.getElementById('startTime');
@@ -112,7 +113,6 @@
 
     function renderSuggestions(suggestions) {
         suggestionBox.innerHTML = '';
-        console.log(suggestions)
         suggestions.forEach(loc => {
             const display = loc.properties.formatted;
             const item = document.createElement('button');

@@ -1,11 +1,11 @@
 <!-- views/setAvailability.ejs -->
 <!DOCTYPE html>
 <html lang="en">
-<%- include('templates/header',{css:[]}) %>
-<head>
-    <meta charset="UTF-8">
+  <%- include('templates/header',{css:[]}) %>
+  <head>
+    <meta charset="UTF-8" />
     <title>Set Your Availability</title>
-    <link rel="stylesheet" href="/css/calendar.css">
+    <link rel="stylesheet" href="/css/calendar.css" />
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const availabilityForm = document.getElementById('availabilityForm');
@@ -21,7 +21,6 @@
                 saturday:  [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
                 sunday:    [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }]
             };
-            console.log(JSON.stringify(userData) + " User data");
 
             // Preload availability from userData.availability
             for (const [day, ranges] of Object.entries(initialAvailability)) {
@@ -71,7 +70,6 @@
 
 
                 document.getElementById("availability").setAttribute("value", JSON.stringify(availability));
-                console.log(availability);
                 // Send to server
                 form.submit();
             });
@@ -88,34 +86,44 @@
             container.appendChild(div);
         }
     </script>
-</head>
-<body>
-<div class="container">
-    <h2>Select Your Weekly Availability</h2>
-    <form id="availabilityForm" action="/saveAvailability" method="post">
-        <input id="availability" name="availability" type="text" value="" style="display: none">
+  </head>
+  <body>
+    <div class="container">
+      <h2>Select Your Weekly Availability</h2>
+      <form id="availabilityForm" action="/saveAvailability" method="post">
+        <input
+          id="availability"
+          name="availability"
+          type="text"
+          value=""
+          style="display: none"
+        />
 
-        <% ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'].forEach(day => { %>
-            <div class="day-block">
-                <hr><br>
-                <label><%= day.charAt(0).toUpperCase() + day.slice(1) %></label>
-                <br><br>
-                <div class="time-ranges" data-day="<%= day %>">
-                    <div>
-                        <input type="time" class="start-time"> to
-                        <input type="time" class="end-time">
-                        <button type="button" onclick="this.parentElement.remove()">🗑️</button>
-                    </div>
-                </div>
-                <button type="button" onclick="addRange('<%= day %>')">Add Time Range</button>
+        <% ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday',
+        'sunday'].forEach(day => { %>
+        <div class="day-block">
+          <hr />
+          <br />
+          <label><%= day.charAt(0).toUpperCase() + day.slice(1) %></label>
+          <br /><br />
+          <div class="time-ranges" data-day="<%= day %>">
+            <div>
+              <input type="time" class="start-time" /> to
+              <input type="time" class="end-time" />
+              <button type="button" onclick="this.parentElement.remove()">
+                🗑️
+              </button>
             </div>
+          </div>
+          <button type="button" onclick="addRange('<%= day %>')">
+            Add Time Range
+          </button>
+        </div>
         <% }) %>
-        <br>
+        <br />
         <button type="submit">Save Availability</button>
-    </form>
-
-</div>
-<%- include('templates/footer', {currentPage:'home'}) %>
-
-</body>
+      </form>
+    </div>
+    <%- include('templates/footer', {currentPage:'home'}) %>
+  </body>
 </html>

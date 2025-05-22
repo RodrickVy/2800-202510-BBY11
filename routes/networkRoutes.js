@@ -9,7 +9,9 @@ const openai = new OpenAI({
 });
 const router = express.Router();
 
+// Networking and leaderboard routes for alumni and users
 const networkRoutes = (userCollection) => {
+  // Home page: show alumni list if authenticated
   router.get("/", async (req, res) => {
     if (req.session.authenticated) {
       res.render("home", {
@@ -21,32 +23,36 @@ const networkRoutes = (userCollection) => {
     }
   });
 
+  // Network landing page
   router.get("/network", (req, res) => {
     res.render("network");
   });
 
-    router.get("/match-alumni", async (req, res) => {
-        const currentUserProfile = req.session.userProfile;
-        if(req.session.authenticated){
-            const matchedAlumni = await matchAlumni(userCollection, currentUserProfile);
-            res.render("home", { alumni:matchedAlumni });
-        }else{
-            res.redirect("/login");
-        }
+  // Match alumni to current user
+  router.get("/match-alumni", async (req, res) => {
+    const currentUserProfile = req.session.userProfile;
+    if (req.session.authenticated) {
+      const matchedAlumni = await matchAlumni(userCollection, currentUserProfile);
+      res.render("home", { alumni: matchedAlumni });
+    } else {
+      res.redirect("/login");
+    }
 
-    });
+  });
 
-    router.get("/leaderboard", async (req, res) => {
-        const currentUserProfile = req.session.userProfile;
-        if(req.session.authenticated){
-            const matchedAlumni = await getTopUsersByPoints(10,userCollection);
-            res.render("home", { alumni:matchedAlumni });
-        }else{
-            res.redirect("/login");
-        }
+  // Leaderboard of top users by points
+  router.get("/leaderboard", async (req, res) => {
+    const currentUserProfile = req.session.userProfile;
+    if (req.session.authenticated) {
+      const matchedAlumni = await getTopUsersByPoints(10, userCollection);
+      res.render("home", { alumni: matchedAlumni });
+    } else {
+      res.redirect("/login");
+    }
 
-    });
+  });
 
+  // Search alumni profiles
   router.get("/search", async (req, res) => {
     const query = req.query.query;
 

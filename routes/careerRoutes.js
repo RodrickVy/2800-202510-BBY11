@@ -1,3 +1,4 @@
+// Career quiz and career path suggestion routes
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
@@ -14,9 +15,9 @@ const careersPath = path.join(__dirname, "../app/data/careers.json");
 const rawData = fs.readFileSync(careersPath, "utf8");
 const careers = JSON.parse(rawData);
 
-
-
+// Main router for career quiz, results, and career details
 const careerRoutes = (userCollection) => {
+  // Render the career quiz page
   router.get("/career_quiz", (req, res) => {
     res.render("careerQuiz", {
       error: null,
@@ -25,7 +26,7 @@ const careerRoutes = (userCollection) => {
     });
   });
 
-  // POST route to handle form submission
+  // Handle quiz submission and suggest careers
   router.post("/submitCareerQuiz", async (req, res) => {
     const quizAnswers = req.body.quizAnswers;
     console.log(quizAnswers);
@@ -67,7 +68,6 @@ const careerRoutes = (userCollection) => {
       });
       console.log(JSON.stringify(completion.choices[0].message));
       const gptResponse = completion.choices[0].message.content;
-      console.log(gptResponse);
       res.render("careerQuizResults", {
         title: "Career Suggestions",
         careers: JSON.parse(gptResponse),
@@ -82,6 +82,7 @@ const careerRoutes = (userCollection) => {
     }
   });
 
+  // List all careers
   router.get("/careers", (req, res) => {
     try {
       const careersPath = path.join(__dirname, "../app/data/careers.json");
@@ -109,6 +110,7 @@ const careerRoutes = (userCollection) => {
     }
   });
 
+  // Show details for a specific career
   router.get("/careers/:slug", async (req, res) => {
     try {
       const careersPath = path.join(__dirname, "../app/data/careers.json");
