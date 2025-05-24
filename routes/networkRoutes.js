@@ -44,8 +44,10 @@ const networkRoutes = (userCollection) => {
   router.get("/leaderboard", async (req, res) => {
     const currentUserProfile = req.session.userProfile;
     if (req.session.authenticated) {
+      const userType = currentUserProfile.user_type
+        ;
       const matchedAlumni = await getTopUsersByPoints(10, userCollection);
-      res.render("home", { alumni: matchedAlumni });
+      res.render("home", { alumni: matchedAlumni, userType: userType });
     } else {
       res.redirect("/login");
     }
