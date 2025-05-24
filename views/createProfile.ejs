@@ -1,96 +1,304 @@
-<%- include('templates/header',{css:["css/index.css"]}) %>
-<div class="bg-light d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+<%- include('templates/header',{css:["css/index.css"]}) %> 
+<div class="profile-creation-container" style="background-color: #F3F2F3; min-height: 100vh; padding: 2rem 0;">
   <style>
-    .profile-image {
+    :root {
+      --primary-blue: #013C70;
+      --light-blue: #E6F0FA;
+      --accent-yellow: #F2E205;
+      --dark-yellow: #D9CB00;
+      --light-bg: #F3F2F3;
+      --card-bg: #FFFFEE;
+    }
+    
+    .profile-creation-card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(1, 60, 112, 0.1);
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .profile-creation-title {
+      color: var(--primary-blue);
+      text-align: center;
+      margin-bottom: 2rem;
+      font-weight: 700;
+    }
+    
+    .section-title {
+      color: var(--primary-blue);
+      border-bottom: 2px solid var(--accent-yellow);
+      padding-bottom: 0.5rem;
+      margin: 1.5rem 0 1rem;
+      font-weight: 600;
+    }
+    
+    .profile-image-container {
+      position: relative;
       width: 150px;
       height: 150px;
-      object-fit: cover;
+      margin: 0 auto 1.5rem;
+      border-radius: 50%;
+      overflow: hidden;
+      background: white;
+      border: 3px solid var(--primary-blue); /* Move border here for perfect roundness */
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .profile-image-container > label {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border-radius: 50%;
       cursor: pointer;
-      display: block;
-      margin: 0 auto 1rem auto;
-      border: 2px solid #001f3f;
+      margin: 0;
+      padding: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
-
+    
+    .profile-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      /* Remove border from here */
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .profile-image:hover {
+      transform: scale(1.03);
+      box-shadow: 0 4px 8px rgba(1, 60, 112, 0.2);
+    }
+    
+    .image-upload-label {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background-color: var(--accent-yellow);
+      color: var(--primary-blue);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+      border: 2px solid var(--primary-blue);
+    }
+    
     #imageInput {
       display: none;
     }
+    
+    .form-label {
+      color: var(--primary-blue);
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    
+    .form-control, .form-select {
+      border: 1px solid var(--primary-blue);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      background-color: white;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: var(--accent-yellow);
+      box-shadow: 0 0 0 0.25rem rgba(242, 226, 5, 0.25);
+    }
+    
+    textarea.form-control {
+      min-height: 100px;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-blue);
+      border-color: var
+      padding: 0.75rem;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-primary:hover {
+      background-color: #012a54;
+      border-color: #012a54;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(1, 60, 112, 0.2);
+    }
+    
+    .add-btn {
+      background-color: var(--accent-yellow);
+      border-color: var(--accent-yellow);
+      color: var(--primary-blue);
+      font-weight: 600;
+      padding: 0.75rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      transition: all 0.2s ease;
+    }
+    
+    .add-btn:hover {
+      background-color: var(--dark-yellow);
+      border-color: var(--dark-yellow);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(1, 60, 112, 0.2);
+    }
+    
+    .remove-btn {
+      background-color: transparent;
+      border: 1px solid #dc3545;
+      color: #dc3545;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    
+    .remove-btn:hover {
+      background-color: #dc3545;
+      color: white;
+    }
+    
+    .form-section {
+      background-color: var(--light-blue);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      background-color: var(--accent-yellow);
+      color: var(--primary-blue);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
   </style>
 
-  <div class="  shadow-sm p-4" style="max-width: 800px; width: 100%;">
-    <h2 class="text-center mb-3">Create Profile</h2>
+  <div class="profile-creation-card">
+    <h1 class="profile-creation-title">Create Your Profile</h1>
 
     <form id="form" action="/submitProfile" method="POST" enctype="multipart/form-data">
-      <div class="text-center mb-4">
-        <label for="imageInput">
-          <img src="<%=userData.image%>" class="profile-image" id="previewImage" alt="upload Image">
-        </label>
-        <input type="file" id="imageInput" name="profileImage" accept="image/*">
+      <!-- Profile Image -->
+      <div class="text-center">
+        <div class="profile-image-container">
+          <label for="imageInput">
+            <img src="<%= userData.image && userData.image.trim() !== '' ? userData.image : '/images/user.png' %>" class="profile-image" id="previewImage" alt="Profile Image">
+            <span class="image-upload-label">+</span>
+          </label>
+          <input type="file" id="imageInput" name="profileImage" accept="image/*">
+        </div>
+        <p class="text-muted">Click to upload a profile photo</p>
       </div>
 
-      <!-- Personal Info -->
-      <h2>Personal</h2>
-      <label for="firstname">Name: </label><input value="<%=userData.name%>" placeholder="First Name" type="text" id="firstname" name="firstname" class="form-control mb-3" >
-      <label for="lastname">Last name: </label><input value="<%=userData.lastname%>" placeholder="Last Name" type="text" id="lastname" name="lastname" class="form-control mb-3" >
+      <!-- Personal Info Section -->
+      <div class="form-section">
+        <h3 class="section-title">Personal Information</h3>
+        
+        <div class="row">
+          <div class="col-md-6">
+            <label for="firstname" class="form-label">First Name</label>
+            <input value="<%=userData.name%>" type="text" id="firstname" name="firstname" class="form-control" placeholder="Enter your first name">
+          </div>
+          <div class="col-md-6">
+            <label for="lastname" class="form-label">Last Name</label>
+            <input value="<%=userData.lastname%>" type="text" id="lastname" name="lastname" class="form-control" placeholder="Enter your last name">
+          </div>
+        </div>
+        
+        <div class="d-flex align-items-center mb-3">
+          <label for="options" class="form-label me-2 mb-0">Status:</label>
+          <select name="user_type" id="options" class="form-select" style="width: auto;">
+            <option value="student" <%= userData.user_type.toLowerCase() === 'student' ? 'selected' : '' %>>Student</option>
+            <option value="alumni" <%= userData.user_type.toLowerCase() === 'alumni' ? 'selected' : '' %>>Alumni</option>
+          </select>
+        </div>
+        
+        <label for="bio" class="form-label">Bio</label>
+        <textarea id="bio" name="bio" class="form-control" placeholder="Tell us about yourself..."><%=userData.bio.trim()%></textarea>
+      </div>
 
-      <label for="options">Status:</label>
-      <%= userData.user_type.toLowerCase()%>
-      <select name="user_type" id="options" class="form-select">
-        <option value="student" <%= userData.user_type.toLowerCase() === 'student' ? 'selected' : '' %>>Student</option>
-        <option value="alumni" <%= userData.user_type.toLowerCase() === 'alumni' ? 'selected' : '' %>>Alumni</option>
-      </select>
+      <!-- Education Section -->
+      <div class="form-section">
+        <div class="d-flex justify-content-between align-items-center">
+          <h3 class="section-title mb-0">Education</h3>
+          <button id="ed_add" type="button" class="btn add-btn">
+            <i class="fas fa-plus me-2"></i>Add Education
+          </button>
+        </div>
+        
+        <section id="educationSection">
+          <%- include('templates/profileEducationSet', { index: 0 }) %>
+        </section>
+      </div>
 
-      <label for="bio"></label>
-      <textarea  type="textarea" id="bio" name="bio" class="form-control mb-3" ><%=userData.bio.trim()%></textarea>
-      <br><br>
-      <!-- Education -->
-      <h2>Education</h2>
-      <section id="educationSection">
+      <!-- Work Experience Section -->
+      <div class="form-section">
+        <div class="d-flex justify-content-between align-items-center">
+          <h3 class="section-title mb-0">Work Experience</h3>
+          <button id="work_add" type="button" class="btn add-btn">
+            <i class="fas fa-plus me-2"></i>Add Experience
+          </button>
+        </div>
+        
+        <section id="workExperienceSection">
+          <%- include('templates/profileWorkExperienceSet', { index: 0 }) %>
+        </section>
+      </div>
 
-       <%- include('templates/profileEducationSet', { index: 0 }) %>
+      <!-- Skills & Interests -->
+      <div class="form-section">
+        <h3 class="section-title">Skills & Interests</h3>
+        
+        <label for="interest" class="form-label">Interests</label>
+        <input value="<%= userData.interests.join(",")%>" type="text" id="interest" name="interests" class="form-control" placeholder="e.g., Web Development, Data Science, UX Design">
+        <small class="text-muted">Separate multiple interests with commas</small>
+        
+        <label for="skills" class="form-label mt-3">Skills</label>
+        <input value="<%= userData.skills.join(",")%>" type="text" id="skills" name="skills" class="form-control" placeholder="e.g., JavaScript, Python, Figma">
+        <small class="text-muted">Separate multiple skills with commas</small>
+      </div>
 
-      </section>
+      <!-- Social Media -->
+      <div class="form-section">
+        <div class="d-flex justify-content-between align-items-center">
+          <h3 class="section-title mb-0">Social Media</h3>
+          <button id="social_add" type="button" class="btn add-btn">
+            <i class="fas fa-plus me-2"></i>Add Social Media
+          </button>
+        </div>
+        
+        <section id="socialMediaSet">
+          <%- include('templates/profileSocialMediaSet', { index: 0 }) %>
+        </section>
+      </div>
 
-      <button id="ed_add" class="btn  btn-success  btn-lg w-100">
-        <i class="fas fa-add me-2"></i> Add
+      <!-- Hidden Inputs -->
+      <input id="education" name="education" type="hidden">
+      <input id="workExp" name="workExp" type="hidden">
+      <input id="media" name="media" type="hidden">
+
+      <!-- Submit Button -->
+      <button id="submitBtn" type="submit" class="btn btn-primary w-100 py-3 mt-4" style="font-size: 1.1rem;">
+        <i class="fas fa-save me-2"></i>Save Profile
       </button>
-      <br><br>
-      <h2>Work Experience</h2>
-      <section id="workExperienceSection">
-        <%- include('templates/profileWorkExperienceSet', { index: 0 }) %>
-      </section>
-
-        <button id="work_add" class="btn btn-success btn-lg w-100">
-          <i class="fas fa-add me-2"></i> Add
-        </button>
-
-
-      <label for="interest">Interests (comma seperated)</label><input value="<%= userData.interests.join(",")%>" placeholder="Fields of interest" type="text" id="interest" name="interests" class="form-control mb-3">
-      <label for="skills">Skills (comma seperated)</label><input value="<%= userData.skills.join(",")%>" placeholder="Skills" type="text" id="skills" name="skills" class="form-control mb-3">
-      <!-- Education -->
-      <h2>Social Media</h2>
-      <section id="socialMediaSet">
-
-        <%- include('templates/profileSocialMediaSet', { index: 0 }) %>
-
-      </section>
-
-      <button id="social_add" class="btn  btn-success  btn-lg w-100">
-        <i class="fas fa-add me-2"></i> Add
-      </button>
-      <br><br>
-      <input id="education" name="education" style="display: none">
-      <input id="workExp" name="workExp" style="display: none">
-      <input id="media" name="media" style="display: none">
-
-      <button id="submitBtn"  class="btn btn-primary w-100">Submit</button>
-
     </form>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/scripts/profile/fieldsetController.js"></script>
-
 
   <script>
     window.addEventListener("DOMContentLoaded", () => {
@@ -108,18 +316,17 @@
         }
       });
     });
-const form = document.getElementById("form");
+
+    const form = document.getElementById("form");
     const eduController = new FieldsetListController('educationSection',<%-JSON.stringify( userData.education)%>);
-
     const workExpController = new FieldsetListController('workExperienceSection',<%-JSON.stringify( userData.work)%>);
-
-
     const socialMediaController = new FieldsetListController('socialMediaSet',<%-JSON.stringify( userData.media)%>);
 
-     document.getElementById("ed_add").addEventListener("click", (event) => {
-       event.preventDefault();
-       eduController.addFieldset();
-     });
+    document.getElementById("ed_add").addEventListener("click", (event) => {
+      event.preventDefault();
+      eduController.addFieldset();
+    });
+    
     document.getElementById("work_add").addEventListener("click", (event) => {
       event.preventDefault();
       workExpController.addFieldset();
@@ -130,15 +337,13 @@ const form = document.getElementById("form");
       socialMediaController.addFieldset();
     });
 
-
     document.getElementById("submitBtn").addEventListener("click", (event) => {
       event.preventDefault();
-      document.getElementById("education").setAttribute("value",JSON.stringify(eduController.getData()))
-      document.getElementById("workExp").setAttribute("value",JSON.stringify(workExpController.getData()))
-      document.getElementById("media").setAttribute("value",JSON.stringify(socialMediaController.getData()))
+      document.getElementById("education").value = JSON.stringify(eduController.getData());
+      document.getElementById("workExp").value = JSON.stringify(workExpController.getData());
+      document.getElementById("media").value = JSON.stringify(socialMediaController.getData());
       form.submit();
     });
   </script>
-
 </div>
 <%- include('templates/footer', {currentPage:'account'}) %>

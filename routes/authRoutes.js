@@ -134,7 +134,7 @@ const authRoutes = (userCollection) => {
 
   // Login page
   router.get("/login", (req, res) => {
-    const error = req.query.error;
+    const error = req.query.error ? "invalid username or password" : undefined;
     res.render("login", { error });
   });
 
@@ -145,7 +145,7 @@ const authRoutes = (userCollection) => {
     const schema = Joi.string().email().required();
     const validationResult = schema.validate(username);
     if (validationResult.error) {
-      return res.redirect("/login?error=invalid");
+      return res.render("login", { error: "invalid username or password" });
     }
 
     const result = await userCollection
@@ -169,16 +169,16 @@ const authRoutes = (userCollection) => {
       .toArray();
 
     if (result.length !== 1) {
-      return res.redirect("/login?error=invalid");
+      return res.render("login", { error: "invalid username or password" });
     }
 
     const validPassword = await bcrypt.compare(password, result[0].password);
     if (!validPassword) {
-      return res.redirect("/login?error=invalid");
+      return res.render("login", { error: "invalid username or password" });
     }
 
     if (result.length !== 1) {
-      return res.redirect("/login?error=invalid");
+      return res.render("login", { error: "invalid username or password" });
     }
 
     const userProfile = {

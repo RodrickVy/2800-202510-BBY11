@@ -1,129 +1,117 @@
 <!-- views/setAvailability.ejs -->
 <!DOCTYPE html>
 <html lang="en">
-  <%- include('templates/header',{css:[]}) %>
+  <%- include('templates/header', {css: ['/css/calendar.css']}) %>
   <head>
     <meta charset="UTF-8" />
-    <title>Set Your Availability</title>
-    <link rel="stylesheet" href="/css/calendar.css" />
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const availabilityForm = document.getElementById('availabilityForm');
-
-            const userData = <%- JSON.stringify(userData) %>;
-
-            const initialAvailability = JSON.parse(JSON.stringify(userData.availability)) || {
-                monday:    [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
-                tuesday:   [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
-                wednesday: [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
-                thursday:  [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
-                friday:    [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
-                saturday:  [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
-                sunday:    [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }]
-            };
-
-            // Preload availability from userData.availability
-            for (const [day, ranges] of Object.entries(initialAvailability)) {
-                const container = document.querySelector(`.time-ranges[data-day="${day}"]`);
-                if (!container) continue;
-                container.innerHTML ="";
-                ranges.forEach(range => {
-                    const div = document.createElement('div');
-                    div.innerHTML = `
-                              <input type="time" class="start-time" value="${range.start}"> to
-                              <input type="time" class="end-time" value="${range.end}">
-                              <button type="button" onclick="this.parentElement.remove()">🗑️</button>
-                        `;
-                    container.appendChild(div);
-                });
-            }
-
-            const form = document.getElementById('availabilityForm');
-
-            availabilityForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-
-                const availability = { };
-
-                document.querySelectorAll('.day-block').forEach(dayBlock => {
-                    const day = dayBlock.querySelector('.time-ranges').dataset.day;
-                    const startInputs = dayBlock.querySelectorAll('.start-time');
-                    const endInputs = dayBlock.querySelectorAll('.end-time');
-
-                    const ranges = [];
-
-                    for (let i = 0; i < startInputs.length; i++) {
-                        const start = startInputs[i].value;
-                        const end = endInputs[i].value;
-                        if (start && end) {
-                            ranges.push({ start, end });
-                        }
-                    }
-
-                    if (ranges.length > 0) {
-                        availability[day] = ranges;
-                    }else{
-                        availability[day] =  [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }];
-                    }
-                });
-
-
-
-                document.getElementById("availability").setAttribute("value", JSON.stringify(availability));
-                // Send to server
-                form.submit();
-            });
-        });
-
-        function addRange(day) {
-            const container = document.querySelector(`.time-ranges[data-day="${day}"]`);
-            const div = document.createElement('div');
-            div.innerHTML = `
-        <input type="time" class="start-time"> to
-        <input type="time" class="end-time">
-        <button type="button" onclick="this.parentElement.remove()">🗑️</button>
-      `;
-            container.appendChild(div);
-        }
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Your Availability | ScheduleSync</title>
   </head>
   <body>
     <div class="container">
       <h2>Select Your Weekly Availability</h2>
-      <form id="availabilityForm" action="/saveAvailability" method="post">
-        <input
-          id="availability"
-          name="availability"
-          type="text"
-          value=""
-          style="display: none"
-        />
-
-        <% ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday',
-        'sunday'].forEach(day => { %>
-        <div class="day-block">
-          <hr />
-          <br />
-          <label><%= day.charAt(0).toUpperCase() + day.slice(1) %></label>
-          <br /><br />
-          <div class="time-ranges" data-day="<%= day %>">
-            <div>
-              <input type="time" class="start-time" /> to
-              <input type="time" class="end-time" />
-              <button type="button" onclick="this.parentElement.remove()">
-                🗑️
-              </button>
+      
+      <form id="availabilityForm" class="availability-form" action="/saveAvailability" method="post">
+        <input type="hidden" id="availability" name="availability" value="">
+        
+        <% const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']; %>
+        <% const availability = userData.availability || {
+          monday:    [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+          tuesday:   [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+          wednesday: [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+          thursday:  [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+          friday:    [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+          saturday:  [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }],
+          sunday:    [{ start: '06:00', end: '09:00' }, { start: '17:00', end: '21:00' }]
+        }; %>
+        
+        <% days.forEach(day => { 
+          const dayLower = day.toLowerCase();
+          const ranges = availability[dayLower] || [];
+        %>
+          <div class="day-block">
+            <span class="day-label"><%= day %></span>
+            
+            <div class="time-ranges" data-day="<%= dayLower %>">
+              <% if (ranges.length > 0) { %>
+                <% ranges.forEach(range => { %>
+                  <div class="time-range-group">
+                    <div class="time-input">
+                      <input type="time" class="start-time" value="<%= range.start %>">
+                      <span class="to-text">to</span>
+                      <input type="time" class="end-time" value="<%= range.end %>">
+                    </div>
+                    <button type="button" class="remove-btn" onclick="this.parentElement.remove()">🗑️</button>
+                  </div>
+                <% }); %>
+              <% } else { %>
+                <div class="time-range-group">
+                  <div class="time-input">
+                    <input type="time" class="start-time">
+                    <span class="to-text">to</span>
+                    <input type="time" class="end-time">
+                  </div>
+                  <button type="button" class="remove-btn" onclick="this.parentElement.remove()">🗑️</button>
+                </div>
+              <% } %>
             </div>
+            
+            <button type="button" class="add-range-btn" onclick="addRange('<%= dayLower %>')">
+              <span>+</span> Add Time Range
+            </button>
           </div>
-          <button type="button" onclick="addRange('<%= day %>')">
-            Add Time Range
-          </button>
-        </div>
-        <% }) %>
-        <br />
-        <button type="submit">Save Availability</button>
+        <% }); %>
+        
+        <button type="submit" class="submit-btn">Save Availability</button>
       </form>
     </div>
-    <%- include('templates/footer', {currentPage:'home'}) %>
+    
+    <%- include('templates/footer', {currentPage: 'home'}) %>
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('availabilityForm');
+        
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          
+          const availability = {};
+          document.querySelectorAll('.day-block').forEach(dayBlock => {
+            const day = dayBlock.querySelector('.time-ranges').dataset.day;
+            const startInputs = dayBlock.querySelectorAll('.start-time');
+            const endInputs = dayBlock.querySelectorAll('.end-time');
+            const ranges = [];
+            
+            for (let i = 0; i < startInputs.length; i++) {
+              const start = startInputs[i].value;
+              const end = endInputs[i].value;
+              if (start && end) {
+                ranges.push({ start, end });
+              }
+            }
+            
+            availability[day] = ranges;
+          });
+          
+          document.getElementById('availability').value = JSON.stringify(availability);
+          form.submit();
+        });
+      });
+      
+      function addRange(day) {
+        const container = document.querySelector(`.time-ranges[data-day="${day}"]`);
+        const div = document.createElement('div');
+        div.className = 'time-range-group';
+        div.innerHTML = `
+          <div class="time-input">
+            <input type="time" class="start-time">
+            <span class="to-text">to</span>
+            <input type="time" class="end-time">
+          </div>
+          <button type="button" class="remove-btn" onclick="this.parentElement.remove()">🗑️</button>
+        `;
+        container.appendChild(div);
+      }
+    </script>
   </body>
 </html>

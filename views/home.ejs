@@ -63,7 +63,7 @@
                                             <h5 class="card-title mb-1"><%= user.name %> <%= user.lastname %></h5>
                                         </div>
                                         <div class="text-end">
-                                            <span class="badge bg-light text-dark"><%= user.status || 'Alumni' %></span>
+                                            <span class="badge bg-light text-dark"><%= user.user_type ? user.user_type : 'Alumni' %></span>
                                         </div>
                                     </div>
                                     
